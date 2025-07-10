@@ -1,0 +1,23 @@
+﻿<Application x:Class="chemmylemmy.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:chemmylemmy"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <!-- Monokai-inspired colors and brushes (moved from SearchBarWindow.xaml) -->
+        <Color x:Key="MonokaiBackground">#FF272822</Color>
+        <Color x:Key="MonokaiAccent">#FFFFFFFF</Color>
+        <Color x:Key="MonokaiBorder">#FF49483E</Color>
+        <Color x:Key="MonokaiText">#FFF8F8F2</Color>
+        <Color x:Key="MonokaiSecondaryText">#FF75715E</Color>
+        <Color x:Key="MonokaiHighlight">#FFA6E22E</Color>
+        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource MonokaiBackground}"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource MonokaiAccent}"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource MonokaiBorder}"/>
+        <SolidColorBrush x:Key="TextBrush" Color="{StaticResource MonokaiText}"/>
+        <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource MonokaiSecondaryText}"/>
+        <SolidColorBrush x:Key="HighlightBrush" Color="{StaticResource MonokaiHighlight}"/>
+        <SolidColorBrush x:Key="SearchBoxBackgroundBrush" Color="#FF57584F"/>
+        <SolidColorBrush x:Key="ResultsBoxBackgroundBrush" Color="#FF35362F"/>
+    </Application.Resources>
+</Application>
