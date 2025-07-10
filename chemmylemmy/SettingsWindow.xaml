@@ -1,0 +1,141 @@
+<Window x:Class="chemmylemmy.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings v1.1" Width="500" Height="400"
+        WindowStyle="None" ResizeMode="CanResize" ShowInTaskbar="False" 
+        Background="Transparent" AllowsTransparency="True" 
+        WindowStartupLocation="CenterScreen"
+        FontFamily="Cascadia Mono, Consolas, 'Segoe UI', monospace">
+    <Window.Resources>
+        <!-- Monokai-inspired colors and brushes -->
+        <Color x:Key="MonokaiBackground">#FF272822</Color>
+        <Color x:Key="MonokaiAccent">#FFFFFFFF</Color>
+        <Color x:Key="MonokaiBorder">#FF49483E</Color>
+        <Color x:Key="MonokaiText">#FFF8F8F2</Color>
+        <Color x:Key="MonokaiSecondaryText">#FF75715E</Color>
+        <Color x:Key="MonokaiHighlight">#FFA6E22E</Color>
+        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource MonokaiBackground}"/>
+        <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource MonokaiAccent}"/>
+        <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource MonokaiBorder}"/>
+        <SolidColorBrush x:Key="TextBrush" Color="{StaticResource MonokaiText}"/>
+        <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource MonokaiSecondaryText}"/>
+        <SolidColorBrush x:Key="HighlightBrush" Color="{StaticResource MonokaiHighlight}"/>
+        <SolidColorBrush x:Key="SearchBoxBackgroundBrush" Color="#FF57584F"/>
+        <SolidColorBrush x:Key="ResultsBoxBackgroundBrush" Color="#FF35362F"/>
+    </Window.Resources>
+    
+    <Border CornerRadius="10" Padding="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+            Background="{StaticResource WindowBackgroundBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            
+            <!-- Title Bar -->
+            <Grid Grid.Row="0" Margin="0,0,0,20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <TextBlock Grid.Column="0" Text="Settings" FontSize="18" FontWeight="Bold" 
+                           Foreground="{StaticResource TextBrush}" VerticalAlignment="Center"/>
+                
+                <Button Grid.Column="1" x:Name="CloseButton" Content="✕" Width="30" Height="30"
+                        Background="Transparent" Foreground="{StaticResource TextBrush}" 
+                        BorderThickness="0" FontSize="14" Click="CloseButton_Click"/>
+            </Grid>
+            
+            <!-- Settings Content -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <!-- Hotkey Settings -->
+                    <Border CornerRadius="5" Background="{StaticResource SearchBoxBackgroundBrush}" 
+                            Margin="0,0,0,15" Padding="15" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="Hotkey Settings" FontSize="14" FontWeight="Bold" 
+                                       Foreground="{StaticResource TextBrush}" Margin="0,0,0,10"/>
+                            
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Grid.Column="0" Text="Search Hotkey:" 
+                                           Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                
+                                <TextBox Grid.Column="1" x:Name="HotkeyTextBox" Height="26" 
+                                         Background="Transparent" Foreground="{StaticResource TextBrush}" 
+                                         BorderThickness="0" Padding="6,0" IsReadOnly="True"
+                                         Text="Ctrl+Shift+Z" VerticalAlignment="Center"/>
+                                
+                                <Button Grid.Column="2" Content="Change" Width="80" Height="26" Margin="10,0,0,0"
+                                        Background="{StaticResource AccentBrush}" Foreground="{StaticResource WindowBackgroundBrush}"
+                                        BorderThickness="0" Click="ChangeHotkey_Click"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- Display Settings -->
+                    <Border CornerRadius="5" Background="{StaticResource SearchBoxBackgroundBrush}" 
+                            Margin="0,0,0,15" Padding="15" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="Display Settings" FontSize="14" FontWeight="Bold" 
+                                       Foreground="{StaticResource TextBrush}" Margin="0,0,0,10"/>
+                            
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Grid.Column="0" Text="Decimal Places:" 
+                                           Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                
+                                <ComboBox Grid.Column="1" x:Name="DecimalPlacesComboBox" Height="26"
+                                          Background="Transparent" Foreground="{StaticResource TextBrush}"
+                                          BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                                    <ComboBoxItem Content="2" IsSelected="True"/>
+                                    <ComboBoxItem Content="3"/>
+                                    <ComboBoxItem Content="4"/>
+                                    <ComboBoxItem Content="5"/>
+                                </ComboBox>
+                            </Grid>
+                            
+                            <CheckBox x:Name="AutoHideCheckBox" Content="Auto-hide on focus loss" 
+                                      Foreground="{StaticResource TextBrush}" IsChecked="True" Margin="0,5,0,0"/>
+                        </StackPanel>
+                    </Border>
+                    
+                    <!-- About Section -->
+                    <Border CornerRadius="5" Background="{StaticResource SearchBoxBackgroundBrush}" 
+                            Margin="0,0,0,15" Padding="15" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="About" FontSize="14" FontWeight="Bold" 
+                                       Foreground="{StaticResource TextBrush}" Margin="0,0,0,10"/>
+                            
+                            <TextBlock Text="ChemmyLemmy v1.1" Foreground="{StaticResource TextBrush}" Margin="0,0,0,5"/>
+                            <TextBlock Text="Chemical formula parser and molar mass calculator" 
+                                       Foreground="{StaticResource SecondaryTextBrush}" FontSize="12"/>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </ScrollViewer>
+            
+            <!-- Bottom Buttons -->
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
+                <Button Content="Reset to Defaults" Width="120" Height="30" Margin="0,0,10,0"
+                        Background="Transparent" Foreground="{StaticResource TextBrush}" 
+                        BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Click="ResetDefaults_Click"/>
+                
+                <Button Content="Save" Width="80" Height="30"
+                        Background="{StaticResource AccentBrush}" Foreground="{StaticResource WindowBackgroundBrush}" 
+                        BorderThickness="0" Click="Save_Click"/>
+            </StackPanel>
+        </Grid>
+    </Border>
+</Window> 
