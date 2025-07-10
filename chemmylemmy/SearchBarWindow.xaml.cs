@@ -1,6 +1,7 @@
-using System.Windows;
-using System.Linq;
+using System;
 using System.Text;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace chemmylemmy
@@ -8,32 +9,33 @@ namespace chemmylemmy
     public partial class SearchBarWindow : Window
     {
         private double? lastMolarMass = null;
+
         public SearchBarWindow()
         {
             InitializeComponent();
-            // Clip the window to a rounded rectangle for true rounded corners
-            void UpdateClip() => this.Clip = new System.Windows.Media.RectangleGeometry(new System.Windows.Rect(0, 0, this.ActualWidth, this.ActualHeight), 7, 7);
-            this.Loaded += (s, e) =>
-            {
-                UpdateClip();
-            };
-            this.SizeChanged += (s, e) => UpdateClip();
             SearchTextBox.Focus();
-            SearchTextBox.TextChanged += SearchTextBox_TextChanged;
-            SearchTextBox.KeyDown += SearchTextBox_KeyDown;
+        }
+
+        private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            UpdateResults();
         }
 
         private void SearchTextBox_KeyDown(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && lastMolarMass.HasValue)
+            if (e.Key == Key.Escape)
             {
-                System.Windows.Clipboard.SetText(lastMolarMass.Value.ToString());
-                ResultsTextBlock.Text += "\n(Molar mass copied to clipboard)";
-                e.Handled = true;
+                Close();
+            }
+            else if (e.Key == Key.Enter && lastMolarMass.HasValue)
+            {
+                // Copy to clipboard
+                Clipboard.SetText(lastMolarMass.Value.ToString("F3"));
+                Close();
             }
         }
 
-        private void SearchTextBox_TextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void UpdateResults()
         {
             string query = SearchTextBox.Text.Trim();
             if (string.IsNullOrEmpty(query))
@@ -43,12 +45,13 @@ namespace chemmylemmy
                 return;
             }
 
-            var result = FormulaParser.ParseAndCalculateMolarMass(query);
+            var result = SmartFormulaParser.ParseFormula(query);
             if (result.Success)
             {
                 lastMolarMass = result.MolarMass;
                 var sb = new StringBuilder();
-                sb.AppendLine($"Molar Mass: {result.MolarMass} g/mol");
+                sb.AppendLine($"Method: {result.ParsedFormula}");
+                sb.AppendLine($"Molar Mass: {result.MolarMass:F3} g/mol");
                 foreach (var line in result.Breakdown)
                     sb.AppendLine(line);
                 ResultsTextBlock.Text = sb.ToString().TrimEnd('\n', '\r');
