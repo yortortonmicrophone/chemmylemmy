@@ -15,7 +15,7 @@ namespace chemmylemmy
             public string ParsedFormula { get; set; } // Shows how the formula was interpreted
         }
 
-        // Main parsing method that implements the 3-step logic
+        // Main parsing method that implements section-based parsing
         public static ParseResult ParseFormula(string input)
         {
             var result = new ParseResult();
@@ -28,12 +28,12 @@ namespace chemmylemmy
                 return CalculateMolarMass(exactTokens, result);
             }
 
-            // Step 2: Left-to-right greedy (prefer single letters, use doubles only when necessary)
-            if (TryLeftToRightGreedy(input, out var greedyTokens))
+            // Step 2: Section-based parsing (handle each part independently)
+            if (TrySectionBasedParsing(input, out var sectionTokens))
             {
                 result.Success = true;
-                result.ParsedFormula = "Left-to-right greedy";
-                return CalculateMolarMass(greedyTokens, result);
+                result.ParsedFormula = "Section-based parsing";
+                return CalculateMolarMass(sectionTokens, result);
             }
 
             // Step 3: Try all possible combinations (fallback)
@@ -119,8 +119,8 @@ namespace chemmylemmy
             return ValidateTokens(tokens);
         }
 
-        // Step 2: Left-to-right greedy (prefer single letters, use doubles only when necessary)
-        private static bool TryLeftToRightGreedy(string input, out List<Token> tokens)
+        // Step 2: Section-based parsing (handle each part independently)
+        private static bool TrySectionBasedParsing(string input, out List<Token> tokens)
         {
             tokens = new List<Token>();
             int i = 0;
@@ -152,41 +152,12 @@ namespace chemmylemmy
                 }
                 else if (char.IsLetter(c))
                 {
-                    // Always try single letter first
-                    string singleLetter = char.ToUpper(c).ToString();
-                    if (ChemicalElementData.Elements.ContainsKey(singleLetter))
-                    {
-                        tokens.Add(new Token(TokenType.Element, singleLetter));
-                        i++;
-                        continue;
-                    }
+                    // Parse this section using the best available strategy
+                    var sectionTokens = ParseSection(input, ref i);
+                    if (sectionTokens == null)
+                        return false;
                     
-                    // If single letter fails, try two-letter element
-                    if (i + 1 < input.Length && char.IsLetter(input[i + 1]))
-                    {
-                        string twoLetter = input.Substring(i, 2);
-                        // Try exact case first, then try with proper capitalization
-                        if (ChemicalElementData.Elements.ContainsKey(twoLetter))
-                        {
-                            tokens.Add(new Token(TokenType.Element, twoLetter));
-                            i += 2;
-                            continue;
-                        }
-                        else
-                        {
-                            // Try with proper capitalization (first letter uppercase, second lowercase)
-                            string properCase = char.ToUpper(twoLetter[0]).ToString() + char.ToLower(twoLetter[1]).ToString();
-                            if (ChemicalElementData.Elements.ContainsKey(properCase))
-                            {
-                                tokens.Add(new Token(TokenType.Element, properCase));
-                                i += 2;
-                                continue;
-                            }
-                        }
-                    }
-                    
-                    // No valid element found
-                    return false;
+                    tokens.AddRange(sectionTokens);
                 }
                 else if (char.IsWhiteSpace(c))
                 {
@@ -199,6 +170,161 @@ namespace chemmylemmy
             }
             
             return ValidateTokens(tokens);
+        }
+        
+        // Parse a section of the formula using the best available strategy
+        private static List<Token> ParseSection(string input, ref int i)
+        {
+            // Find the end of this section (next number, parenthesis, or end)
+            int start = i;
+            int end = i;
+            
+            while (end < input.Length && char.IsLetter(input[end]))
+            {
+                end++;
+            }
+            
+            string section = input.Substring(start, end - start);
+            
+            // Try different parsing strategies for this section
+            var strategies = new List<List<Token>>();
+            
+            // Strategy 1: Exact match
+            if (TryParseSectionExact(section, out var exactTokens))
+                strategies.Add(exactTokens);
+            
+            // Strategy 2: Two-letter first
+            if (TryParseSectionTwoLetterFirst(section, out var twoLetterTokens))
+                strategies.Add(twoLetterTokens);
+            
+            // Strategy 3: Single letter first
+            if (TryParseSectionSingleLetterFirst(section, out var singleLetterTokens))
+                strategies.Add(singleLetterTokens);
+            
+            if (strategies.Count == 0)
+                return null;
+            
+            // Choose the best strategy (prefer exact match, then single letter first for most cases)
+            var bestStrategy = strategies[0];
+            if (strategies.Count > 1)
+            {
+                // Prefer exact match over others
+                if (strategies.Any(s => s.Count == 1 && s[0].Value == section))
+                {
+                    bestStrategy = strategies.First(s => s.Count == 1 && s[0].Value == section);
+                }
+                else
+                {
+                    // For mixed cases, prefer single letter first (like the original logic)
+                    // Only use two-letter first if single letter approach fails
+                    var singleLetterStrategy = strategies.FirstOrDefault(s => s.Count > 1 && s.Any(t => t.Value.Length == 1));
+                    if (singleLetterStrategy != null)
+                    {
+                        bestStrategy = singleLetterStrategy;
+                    }
+                }
+            }
+            
+            i = end;
+            return bestStrategy;
+        }
+        
+        // Try to parse a section using exact match
+        private static bool TryParseSectionExact(string section, out List<Token> tokens)
+        {
+            tokens = new List<Token>();
+            if (ChemicalElementData.Elements.ContainsKey(section))
+            {
+                tokens.Add(new Token(TokenType.Element, section));
+                return true;
+            }
+            return false;
+        }
+        
+        // Try to parse a section using two-letter first approach
+        private static bool TryParseSectionTwoLetterFirst(string section, out List<Token> tokens)
+        {
+            tokens = new List<Token>();
+            int i = 0;
+            
+            while (i < section.Length)
+            {
+                if (i + 1 < section.Length)
+                {
+                    string twoLetter = section.Substring(i, 2);
+                    if (ChemicalElementData.Elements.ContainsKey(twoLetter))
+                    {
+                        tokens.Add(new Token(TokenType.Element, twoLetter));
+                        i += 2;
+                        continue;
+                    }
+                    else
+                    {
+                        string properCase = char.ToUpper(twoLetter[0]).ToString() + char.ToLower(twoLetter[1]).ToString();
+                        if (ChemicalElementData.Elements.ContainsKey(properCase))
+                        {
+                            tokens.Add(new Token(TokenType.Element, properCase));
+                            i += 2;
+                            continue;
+                        }
+                    }
+                }
+                
+                string singleLetter = char.ToUpper(section[i]).ToString();
+                if (ChemicalElementData.Elements.ContainsKey(singleLetter))
+                {
+                    tokens.Add(new Token(TokenType.Element, singleLetter));
+                    i++;
+                    continue;
+                }
+                
+                return false;
+            }
+            
+            return true;
+        }
+        
+        // Try to parse a section using single letter first approach
+        private static bool TryParseSectionSingleLetterFirst(string section, out List<Token> tokens)
+        {
+            tokens = new List<Token>();
+            int i = 0;
+            
+            while (i < section.Length)
+            {
+                string singleLetter = char.ToUpper(section[i]).ToString();
+                if (ChemicalElementData.Elements.ContainsKey(singleLetter))
+                {
+                    tokens.Add(new Token(TokenType.Element, singleLetter));
+                    i++;
+                    continue;
+                }
+                
+                if (i + 1 < section.Length)
+                {
+                    string twoLetter = section.Substring(i, 2);
+                    if (ChemicalElementData.Elements.ContainsKey(twoLetter))
+                    {
+                        tokens.Add(new Token(TokenType.Element, twoLetter));
+                        i += 2;
+                        continue;
+                    }
+                    else
+                    {
+                        string properCase = char.ToUpper(twoLetter[0]).ToString() + char.ToLower(twoLetter[1]).ToString();
+                        if (ChemicalElementData.Elements.ContainsKey(properCase))
+                        {
+                            tokens.Add(new Token(TokenType.Element, properCase));
+                            i += 2;
+                            continue;
+                        }
+                    }
+                }
+                
+                return false;
+            }
+            
+            return true;
         }
 
 

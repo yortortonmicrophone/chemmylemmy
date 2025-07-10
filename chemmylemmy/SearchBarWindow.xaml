@@ -5,7 +5,7 @@
         WindowStyle="None" ResizeMode="NoResize" Topmost="True" ShowInTaskbar="False" Background="Transparent" AllowsTransparency="True" Opacity="1.0" SizeToContent="Height"
         FontFamily="Cascadia Mono, Consolas, 'Segoe UI', monospace">
     <!-- No local resources needed; all brushes/colors are now in App.xaml -->
-        <Border CornerRadius="7" Padding="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource WindowBackgroundBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+        <Border CornerRadius="10" Padding="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource WindowBackgroundBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
 
         <StackPanel>
             <Border CornerRadius="5" Background="{StaticResource SearchBoxBackgroundBrush}" Margin="0,0,0,6" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1">
@@ -14,7 +14,7 @@
                          CaretBrush="{StaticResource AccentBrush}" SelectionBrush="{StaticResource HighlightBrush}"
                          TextChanged="SearchTextBox_TextChanged" KeyDown="SearchTextBox_KeyDown"/>
             </Border>
-            <Border CornerRadius="4" Background="{StaticResource ResultsBoxBackgroundBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0">
+            <Border CornerRadius="5" Background="{StaticResource ResultsBoxBackgroundBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0">
                 <TextBlock x:Name="ResultsTextBlock" Foreground="{StaticResource TextBrush}" FontSize="12" Text="Results will appear here..."
                            Padding="8,6,8,6" Margin="0" TextWrapping="Wrap" VerticalAlignment="Top"/>
             </Border>
