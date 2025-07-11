@@ -25,6 +25,7 @@ namespace chemmylemmy
         private DispatcherTimer debounceTimer;
         private const int DebounceMilliseconds = 500;
         private System.Windows.Media.ScaleTransform ScaleTransform;
+        private int? lastPubChemCID = null; // Store last PubChem CID
 
         public SearchBarWindow(Settings settings)
         {
@@ -167,7 +168,29 @@ namespace chemmylemmy
                     Close();
                 }
             }
-            else if (e.Key == Key.Enter && lastMolarMass.HasValue)
+            // New: Ctrl+Enter opens PubChem page if result is from PubChem
+            else if (e.Key == Key.Enter && (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
+            {
+                if (isPubChemResult && lastPubChemCID.HasValue)
+                {
+                    string url = $"https://pubchem.ncbi.nlm.nih.gov/compound/{lastPubChemCID.Value}";
+                    try
+                    {
+                        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+                        {
+                            FileName = url,
+                            UseShellExecute = true
+                        });
+                    }
+                    catch (Exception ex)
+                    {
+                        // Optionally show error to user
+                        System.Windows.MessageBox.Show($"Failed to open PubChem page: {ex.Message}");
+                    }
+                }
+            }
+            // Only Enter (no Ctrl): copy molar mass
+            else if (e.Key == Key.Enter && lastMolarMass.HasValue && !(Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)))
             {
                 if (!isClosing)
                 {
@@ -398,6 +421,7 @@ namespace chemmylemmy
             var compound = pubChemResult.Compound;
             lastMolarMass = compound.MolecularWeight;
             isPubChemResult = true;
+            lastPubChemCID = compound.CID; // Store CID for Ctrl+Enter
             
             var sb = new StringBuilder();
             sb.AppendLine($"PubChem Search: {pubChemResult.SearchTerm}");
