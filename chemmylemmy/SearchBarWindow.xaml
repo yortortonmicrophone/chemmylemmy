@@ -16,8 +16,18 @@
                              TextChanged="SearchTextBox_TextChanged" KeyDown="SearchTextBox_KeyDown"/>
                 </Border>
                 <Border CornerRadius="5" Background="{StaticResource ResultsBoxBackgroundBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0">
-                    <TextBlock x:Name="ResultsTextBlock" Foreground="{StaticResource TextBrush}" FontSize="12" Text="Results will appear here..."
-                               Padding="8,6,8,6" Margin="0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        
+                        <TextBlock x:Name="ResultsTextBlock" Foreground="{StaticResource TextBrush}" FontSize="12" Text="Results will appear here..."
+                                   Padding="8,6,8,6" Margin="0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="0"/>
+                        
+                        <Image x:Name="StructureImage" Grid.Column="1" Width="150" Height="150" Margin="8,6,8,6" 
+                               Stretch="Uniform" Visibility="Collapsed"/>
+                    </Grid>
                 </Border>
             </StackPanel>
             

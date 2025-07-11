@@ -16,6 +16,7 @@ namespace chemmylemmy
         public string? CanonicalSMILES { get; set; }
         public string? InChI { get; set; }
         public string? InChIKey { get; set; }
+        public string? Structure2DUrl { get; set; } // Added for 2D structure image
     }
 
     public class PubChemSearchResult
@@ -364,7 +365,8 @@ namespace chemmylemmy
                                 IUPACName = "", // We'll get this later if needed
                                 CanonicalSMILES = "", // We'll get this later if needed
                                 InChI = "", // We'll get this later if needed
-                                InChIKey = "" // We'll get this later if needed
+                                InChIKey = "", // We'll get this later if needed
+                                Structure2DUrl = Get2DStructureUrl(cid)
                             };
                             
                             Log($"Successfully created compound with MW: {compound.MolecularWeight}, Formula: {compound.MolecularFormula}");
@@ -454,6 +456,12 @@ namespace chemmylemmy
             }
             Log($"Returning default value: {defaultValue}");
             return defaultValue;
+        }
+
+        public static string Get2DStructureUrl(int cid)
+        {
+            // PubChem provides 2D structure images at this URL pattern
+            return $"https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/{cid}/PNG";
         }
     }
 }

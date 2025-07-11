@@ -10,6 +10,8 @@ using System.Windows.Threading;
 using System.Windows.Media.Animation;
 using System.Net.Http;
 using System.Collections.Generic; // Added for List<string>
+using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace chemmylemmy
 {
@@ -250,6 +252,7 @@ namespace chemmylemmy
                 ResultsTextBlock.Text = "Results will appear here...";
                 lastMolarMass = null;
                 isPubChemResult = false;
+                StructureImage.Visibility = Visibility.Collapsed; // Hide image when no search
                 return;
             }
 
@@ -283,12 +286,14 @@ namespace chemmylemmy
                         sb.AppendLine(line);
                     
                     ResultsTextBlock.Text = sb.ToString().TrimEnd('\n', '\r');
+                    StructureImage.Visibility = Visibility.Collapsed; // Hide image for local parsing
                 }
                 else
                 {
                     lastMolarMass = null;
                     isPubChemResult = false;
                     ResultsTextBlock.Text = $"Local parsing failed: {mmResult.Error}";
+                    StructureImage.Visibility = Visibility.Collapsed;
                 }
                 return;
             }
@@ -317,6 +322,7 @@ namespace chemmylemmy
                     lastMolarMass = null;
                     isPubChemResult = false;
                     ResultsTextBlock.Text = $"PubChem search failed: {pubChemResult.Error}";
+                    StructureImage.Visibility = Visibility.Collapsed;
                 }
                 return;
             }
@@ -342,6 +348,7 @@ namespace chemmylemmy
                     sb.AppendLine(line);
                 
                 ResultsTextBlock.Text = sb.ToString().TrimEnd('\n', '\r');
+                StructureImage.Visibility = Visibility.Collapsed; // Hide image for local parsing
             }
             else
             {
@@ -360,6 +367,7 @@ namespace chemmylemmy
                     lastMolarMass = null;
                     isPubChemResult = false;
                     ResultsTextBlock.Text = $"Not found in local database or PubChem.\nLocal error: {localResult.Error}\nPubChem error: {pubChemResult.Error}";
+                    StructureImage.Visibility = Visibility.Collapsed;
                 }
             }
         }
@@ -382,6 +390,49 @@ namespace chemmylemmy
             sb.AppendLine($"Molecular Weight: {compound.MolecularWeight.ToString(format)} g/mol");
             
             ResultsTextBlock.Text = sb.ToString().TrimEnd('\n', '\r');
+            
+            // Load and display 2D structure image if available
+            if (!string.IsNullOrEmpty(compound.Structure2DUrl))
+            {
+                await LoadStructureImageAsync(compound.Structure2DUrl);
+            }
+            else
+            {
+                StructureImage.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private async Task LoadStructureImageAsync(string imageUrl)
+        {
+            try
+            {
+                using var httpClient = new HttpClient();
+                httpClient.Timeout = TimeSpan.FromSeconds(10);
+                
+                var imageBytes = await httpClient.GetByteArrayAsync(imageUrl);
+                
+                using var stream = new MemoryStream(imageBytes);
+                var bitmap = new BitmapImage();
+                bitmap.BeginInit();
+                bitmap.CacheOption = BitmapCacheOption.OnLoad;
+                bitmap.StreamSource = stream;
+                bitmap.EndInit();
+                bitmap.Freeze(); // Important for cross-thread usage
+                
+                Dispatcher.Invoke(() =>
+                {
+                    StructureImage.Source = bitmap;
+                    StructureImage.Visibility = Visibility.Visible;
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Failed to load structure image: {ex.Message}");
+                Dispatcher.Invoke(() =>
+                {
+                    StructureImage.Visibility = Visibility.Collapsed;
+                });
+            }
         }
     }
 } 
