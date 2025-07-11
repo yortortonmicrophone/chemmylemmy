@@ -327,8 +327,6 @@ namespace chemmylemmy
             return true;
         }
 
-
-
         // Step 3: Try all possible combinations (fallback)
         private static bool TryAllCombinations(string input, out List<Token> tokens)
         {
