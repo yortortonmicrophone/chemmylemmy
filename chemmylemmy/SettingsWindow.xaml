@@ -106,6 +106,26 @@
                                 </ComboBox>
                             </Grid>
                             
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Grid.Column="0" Text="Window Scale:" 
+                                           Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                
+                                <ComboBox Grid.Column="1" x:Name="ScaleComboBox" Height="26"
+                                          Background="White" Foreground="Black"
+                                          BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                                    <ComboBoxItem Content="100%" IsSelected="True"/>
+                                    <ComboBoxItem Content="125%"/>
+                                    <ComboBoxItem Content="150%"/>
+                                    <ComboBoxItem Content="175%"/>
+                                    <ComboBoxItem Content="200%"/>
+                                </ComboBox>
+                            </Grid>
+                            
                             <CheckBox x:Name="AutoHideCheckBox" Content="Auto-hide on focus loss" 
                                       Foreground="{StaticResource TextBrush}" IsChecked="True" Margin="0,5,0,0"/>
                             <CheckBox x:Name="ShowCopyConfirmationCheckBox" Content="Show copy confirmation" 

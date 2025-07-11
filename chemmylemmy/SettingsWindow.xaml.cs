@@ -115,6 +115,29 @@ namespace chemmylemmy
             
             AutoHideCheckBox.IsChecked = settings.AutoHideOnFocusLoss;
             ShowCopyConfirmationCheckBox.IsChecked = settings.ShowCopyConfirmation;
+            
+            // Set scale combo box
+            switch (settings.WindowScale)
+            {
+                case 1.0:
+                    ScaleComboBox.SelectedIndex = 0; // 100%
+                    break;
+                case 1.25:
+                    ScaleComboBox.SelectedIndex = 1; // 125%
+                    break;
+                case 1.5:
+                    ScaleComboBox.SelectedIndex = 2; // 150%
+                    break;
+                case 1.75:
+                    ScaleComboBox.SelectedIndex = 3; // 175%
+                    break;
+                case 2.0:
+                    ScaleComboBox.SelectedIndex = 4; // 200%
+                    break;
+                default:
+                    ScaleComboBox.SelectedIndex = 0; // Default to 100%
+                    break;
+            }
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -201,6 +224,20 @@ namespace chemmylemmy
             
             settings.AutoHideOnFocusLoss = AutoHideCheckBox.IsChecked ?? true;
             settings.ShowCopyConfirmation = ShowCopyConfirmationCheckBox.IsChecked ?? false;
+            
+            // Save scale setting
+            if (ScaleComboBox.SelectedItem is ComboBoxItem scaleItem)
+            {
+                var scaleText = scaleItem.Content.ToString();
+                if (scaleText.EndsWith("%"))
+                {
+                    var percentage = scaleText.TrimEnd('%');
+                    if (double.TryParse(percentage, out double percent))
+                    {
+                        settings.WindowScale = percent / 100.0;
+                    }
+                }
+            }
             
             settings.Save();
             

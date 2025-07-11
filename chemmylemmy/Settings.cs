@@ -19,6 +19,7 @@ namespace chemmylemmy
         public ModifierKeys HotkeyModifiers { get; set; } = ModifierKeys.Control | ModifierKeys.Shift;
         public bool AutoHideOnFocusLoss { get; set; } = true;
         public bool ShowCopyConfirmation { get; set; } = true;
+        public double WindowScale { get; set; } = 1.0; // Window scaling factor
 
         public static Settings Load()
         {

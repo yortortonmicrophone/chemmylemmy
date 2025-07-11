@@ -17,6 +17,7 @@ namespace chemmylemmy
         public string? InChI { get; set; }
         public string? InChIKey { get; set; }
         public string? Structure2DUrl { get; set; } // Added for 2D structure image
+        public string? Synonym { get; set; } // Added for most common synonym
     }
 
     public class PubChemSearchResult
@@ -366,10 +367,15 @@ namespace chemmylemmy
                                 CanonicalSMILES = "", // We'll get this later if needed
                                 InChI = "", // We'll get this later if needed
                                 InChIKey = "", // We'll get this later if needed
-                                Structure2DUrl = Get2DStructureUrl(cid)
+                                Structure2DUrl = Get2DStructureUrl(cid),
+                                Synonym = "" // We'll get this in a separate call
                             };
                             
                             Log($"Successfully created compound with MW: {compound.MolecularWeight}, Formula: {compound.MolecularFormula}");
+                            
+                            // Get the synonym in a separate call
+                            compound.Synonym = await GetCompoundSynonymAsync(cid);
+                            
                             return compound;
                         }
                         else
@@ -456,6 +462,41 @@ namespace chemmylemmy
             }
             Log($"Returning default value: {defaultValue}");
             return defaultValue;
+        }
+
+        private static async Task<string> GetCompoundSynonymAsync(int cid)
+        {
+            try
+            {
+                // Get the first synonym from the synonyms endpoint
+                var url = $"{BaseUrl}/compound/cid/{cid}/synonyms/JSON";
+                Log($"Getting synonyms from: {url}");
+                
+                var response = await httpClient.GetStringAsync(url);
+                var jsonDoc = JsonDocument.Parse(response);
+                
+                if (jsonDoc.RootElement.TryGetProperty("InformationList", out var infoList) &&
+                    infoList.TryGetProperty("Information", out var infoArray) &&
+                    infoArray.GetArrayLength() > 0)
+                {
+                    var info = infoArray[0];
+                    if (info.TryGetProperty("Synonym", out var synonymArray) &&
+                        synonymArray.GetArrayLength() > 0)
+                    {
+                        var firstSynonym = synonymArray[0].GetString();
+                        Log($"Found synonym: {firstSynonym}");
+                        return firstSynonym ?? "";
+                    }
+                }
+                
+                Log("No synonyms found");
+                return "";
+            }
+            catch (Exception ex)
+            {
+                Log($"Error getting synonym: {ex.Message}");
+                return "";
+            }
         }
 
         public static string Get2DStructureUrl(int cid)

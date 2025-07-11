@@ -24,6 +24,7 @@ namespace chemmylemmy
         private Settings settings;
         private DispatcherTimer debounceTimer;
         private const int DebounceMilliseconds = 500;
+        private System.Windows.Media.ScaleTransform ScaleTransform;
 
         public SearchBarWindow(Settings settings)
         {
@@ -58,6 +59,9 @@ namespace chemmylemmy
             
             // Subscribe to window activated event
             this.Activated += SearchBarWindow_Activated;
+            
+            // Apply window scaling
+            ApplyWindowScaling();
         }
 
         private void SearchBarWindow_Activated(object sender, EventArgs e)
@@ -108,16 +112,10 @@ namespace chemmylemmy
             
             ResultsTextBlock.Text = "✅ PubChem connectivity OK. Ready to search!";
             
-            // Test with glucose to verify everything works
-            Console.WriteLine("Testing glucose search...");
-            var glucoseTest = await PubChemService.TestWithGlucoseAsync();
-            if (glucoseTest.Success)
+            // If there's previous text, show the results immediately
+            if (!string.IsNullOrEmpty(SearchTextBox.Text))
             {
-                Console.WriteLine($"Glucose test successful: MW = {glucoseTest.Compound.MolecularWeight}");
-            }
-            else
-            {
-                Console.WriteLine($"Glucose test failed: {glucoseTest.Error}");
+                await UpdateResults();
             }
         }
 
@@ -382,6 +380,9 @@ namespace chemmylemmy
             sb.AppendLine($"PubChem Search: {pubChemResult.SearchTerm}");
             sb.AppendLine($"CID: {compound.CID}");
             
+            if (!string.IsNullOrEmpty(compound.Synonym))
+                sb.AppendLine($"Name: {compound.Synonym}");
+            
             if (!string.IsNullOrEmpty(compound.MolecularFormula))
                 sb.AppendLine($"Formula: {compound.MolecularFormula}");
             
@@ -432,6 +433,27 @@ namespace chemmylemmy
                 {
                     StructureImage.Visibility = Visibility.Collapsed;
                 });
+            }
+        }
+
+        private void ApplyWindowScaling()
+        {
+            var scale = settings.WindowScale;
+            var mainBorder = this.Content as Border;
+            if (mainBorder != null)
+            {
+                if (scale != 1.0)
+                {
+                    mainBorder.LayoutTransform = new System.Windows.Media.ScaleTransform(scale, scale);
+                    this.Width = 420 * scale;
+                    this.MinWidth = 420 * scale;
+                }
+                else
+                {
+                    mainBorder.LayoutTransform = null;
+                    this.Width = 420;
+                    this.MinWidth = 420;
+                }
             }
         }
     }
