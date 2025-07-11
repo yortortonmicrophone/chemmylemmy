@@ -73,7 +73,7 @@
                                          BorderThickness="0" Padding="6,0" IsReadOnly="True"
                                          Text="Ctrl+Shift+Z" VerticalAlignment="Center"/>
                                 
-                                <Button Grid.Column="2" Content="Change" Width="80" Height="26" Margin="10,0,0,0"
+                                <Button Grid.Column="2" x:Name="ChangeHotkeyButton" Content="Change" Width="80" Height="26" Margin="10,0,0,0"
                                         Background="{StaticResource AccentBrush}" Foreground="{StaticResource WindowBackgroundBrush}"
                                         BorderThickness="0" Click="ChangeHotkey_Click"/>
                             </Grid>
@@ -97,7 +97,7 @@
                                            Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
                                 
                                 <ComboBox Grid.Column="1" x:Name="DecimalPlacesComboBox" Height="26"
-                                          Background="Transparent" Foreground="{StaticResource TextBrush}"
+                                          Background="White" Foreground="Black"
                                           BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
                                     <ComboBoxItem Content="2" IsSelected="True"/>
                                     <ComboBoxItem Content="3"/>
@@ -107,6 +107,8 @@
                             </Grid>
                             
                             <CheckBox x:Name="AutoHideCheckBox" Content="Auto-hide on focus loss" 
+                                      Foreground="{StaticResource TextBrush}" IsChecked="True" Margin="0,5,0,0"/>
+                            <CheckBox x:Name="ShowCopyConfirmationCheckBox" Content="Show copy confirmation" 
                                       Foreground="{StaticResource TextBrush}" IsChecked="True" Margin="0,5,0,0"/>
                         </StackPanel>
                     </Border>
