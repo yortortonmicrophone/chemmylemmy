@@ -132,6 +132,60 @@
                                       Foreground="{StaticResource TextBrush}" IsChecked="True" Margin="0,5,0,0"/>
                         </StackPanel>
                     </Border>
+
+                    <!-- Color Settings -->
+                    <Border CornerRadius="5" Background="{StaticResource SearchBoxBackgroundBrush}"
+                            Margin="0,0,0,15" Padding="15" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+                        <StackPanel>
+                            <TextBlock Text="Color Settings" FontSize="14" FontWeight="Bold"
+                                       Foreground="{StaticResource TextBrush}" Margin="0,0,0,10"/>
+
+                            <Grid Margin="0,0,0,10">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Search Box Border Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                <TextBox Grid.Row="0" Grid.Column="1" x:Name="SearchBoxBorderColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Search Box Text Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
+                                <TextBox Grid.Row="1" Grid.Column="1" x:Name="SearchBoxTextColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
+
+                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Search Box Background Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
+                                <TextBox Grid.Row="2" Grid.Column="1" x:Name="SearchBoxBackgroundColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
+
+                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Results Box Border Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
+                                <TextBox Grid.Row="3" Grid.Column="1" x:Name="ResultsBoxBorderColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
+
+                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Results Box Text Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
+                                <TextBox Grid.Row="4" Grid.Column="1" x:Name="ResultsBoxTextColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
+
+                                <TextBlock Grid.Row="5" Grid.Column="0" Text="Results Box Background Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
+                                <TextBox Grid.Row="5" Grid.Column="1" x:Name="ResultsBoxBackgroundColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
+
+                                <TextBlock Grid.Row="6" Grid.Column="0" Text="Window Border Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
+                                <TextBox Grid.Row="6" Grid.Column="1" x:Name="WindowBorderColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
+
+                                <TextBlock Grid.Row="7" Grid.Column="0" Text="Window Background Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
+                                <TextBox Grid.Row="7" Grid.Column="1" x:Name="WindowBackgroundColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
+
+                                <TextBlock Grid.Row="8" Grid.Column="0" Text="Highlight Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
+                                <TextBox Grid.Row="8" Grid.Column="1" x:Name="HighlightColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
                     
                     <!-- About Section -->
                     <Border CornerRadius="5" Background="{StaticResource SearchBoxBackgroundBrush}" 

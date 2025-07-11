@@ -21,6 +21,17 @@ namespace chemmylemmy
         public bool ShowCopyConfirmation { get; set; } = true;
         public double WindowScale { get; set; } = 1.0; // Window scaling factor
 
+        // Color settings for UI customization
+        public string SearchBoxBorderColor { get; set; } = "#FFFFFFFF"; // Accent (white)
+        public string SearchBoxTextColor { get; set; } = "#FFF8F8F2"; // Monokai text
+        public string SearchBoxBackgroundColor { get; set; } = "#FF57584F"; // SearchBoxBackgroundBrush
+        public string ResultsBoxBorderColor { get; set; } = "#FF49483E"; // Monokai border
+        public string ResultsBoxTextColor { get; set; } = "#FFF8F8F2"; // Monokai text
+        public string ResultsBoxBackgroundColor { get; set; } = "#FF35362F"; // ResultsBoxBackgroundBrush
+        public string WindowBorderColor { get; set; } = "#FF49483E"; // Monokai border
+        public string WindowBackgroundColor { get; set; } = "#FF272822"; // Monokai background
+        public string HighlightColor { get; set; } = "#FFA6E22E"; // Monokai highlight (green)
+
         public static Settings Load()
         {
             try

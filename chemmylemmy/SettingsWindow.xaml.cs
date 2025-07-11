@@ -138,6 +138,17 @@ namespace chemmylemmy
                     ScaleComboBox.SelectedIndex = 0; // Default to 100%
                     break;
             }
+
+            // Load color settings
+            SearchBoxBorderColorTextBox.Text = settings.SearchBoxBorderColor;
+            SearchBoxTextColorTextBox.Text = settings.SearchBoxTextColor;
+            SearchBoxBackgroundColorTextBox.Text = settings.SearchBoxBackgroundColor;
+            ResultsBoxBorderColorTextBox.Text = settings.ResultsBoxBorderColor;
+            ResultsBoxTextColorTextBox.Text = settings.ResultsBoxTextColor;
+            ResultsBoxBackgroundColorTextBox.Text = settings.ResultsBoxBackgroundColor;
+            WindowBorderColorTextBox.Text = settings.WindowBorderColor;
+            WindowBackgroundColorTextBox.Text = settings.WindowBackgroundColor;
+            HighlightColorTextBox.Text = settings.HighlightColor;
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -238,6 +249,17 @@ namespace chemmylemmy
                     }
                 }
             }
+
+            // Save color settings from TextBoxes
+            settings.SearchBoxBorderColor = SearchBoxBorderColorTextBox.Text;
+            settings.SearchBoxTextColor = SearchBoxTextColorTextBox.Text;
+            settings.SearchBoxBackgroundColor = SearchBoxBackgroundColorTextBox.Text;
+            settings.ResultsBoxBorderColor = ResultsBoxBorderColorTextBox.Text;
+            settings.ResultsBoxTextColor = ResultsBoxTextColorTextBox.Text;
+            settings.ResultsBoxBackgroundColor = ResultsBoxBackgroundColorTextBox.Text;
+            settings.WindowBorderColor = WindowBorderColorTextBox.Text;
+            settings.WindowBackgroundColor = WindowBackgroundColorTextBox.Text;
+            settings.HighlightColor = HighlightColorTextBox.Text;
             
             settings.Save();
             

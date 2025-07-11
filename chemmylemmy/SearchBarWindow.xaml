@@ -4,19 +4,36 @@
         Title="SearchBar v1.1" Width="420" MinWidth="420"
         WindowStyle="None" ResizeMode="NoResize" Topmost="True" ShowInTaskbar="False" Background="Transparent" AllowsTransparency="True" Opacity="1.0" SizeToContent="Height"
         FontFamily="Cascadia Mono, Consolas, 'Segoe UI', monospace">
+    <Window.Resources>
+        <Style x:Key="RoundedTextBoxStyle" TargetType="TextBox">
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Padding" Value="6,0"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TextBox">
+                        <Border x:Name="Border" CornerRadius="5" Background="{TemplateBinding Background}">
+                            <ScrollViewer x:Name="PART_ContentHost"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
     <!-- No local resources needed; all brushes/colors are now in App.xaml -->
-        <Border CornerRadius="10" Padding="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource WindowBackgroundBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+    <Border x:Name="MainBorder" CornerRadius="10" Padding="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource WindowBackgroundBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
 
         <Grid>
             <StackPanel>
-                <Border CornerRadius="5" Background="{StaticResource SearchBoxBackgroundBrush}" Margin="0,0,0,6" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1">
+                <Border x:Name="SearchBoxBorder" CornerRadius="5" Background="{StaticResource SearchBoxBackgroundBrush}" Margin="0,0,0,6" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1">
                     <TextBox x:Name="SearchTextBox" Height="26" FontSize="13" VerticalContentAlignment="Center"
+                             Style="{StaticResource RoundedTextBoxStyle}"
                              Background="Transparent" Foreground="{StaticResource TextBrush}" BorderThickness="0" Padding="6,0"
                              CaretBrush="{StaticResource AccentBrush}" SelectionBrush="{StaticResource HighlightBrush}"
                              TextChanged="SearchTextBox_TextChanged" KeyDown="SearchTextBox_KeyDown"/>
                 </Border>
                 
-                <Border CornerRadius="5" Background="{StaticResource ResultsBoxBackgroundBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0">
+                <Border x:Name="ResultsBoxBorder" CornerRadius="5" Background="{StaticResource ResultsBoxBackgroundBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>

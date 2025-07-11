@@ -31,6 +31,19 @@ namespace chemmylemmy
             this.settings = settings;
             InitializeComponent();
 
+            // Apply color settings (robust)
+            SearchBoxBorder.BorderBrush = SafeBrushFromString(settings.SearchBoxBorderColor, "#FFFFFFFF");
+            SearchBoxBorder.Background = SafeBrushFromString(settings.SearchBoxBackgroundColor, "#FF57584F");
+            SearchTextBox.Foreground = SafeBrushFromString(settings.SearchBoxTextColor, "#FFF8F8F2");
+            SearchTextBox.Background = SafeBrushFromString(settings.SearchBoxBackgroundColor, "#FF57584F");
+            ResultsBoxBorder.BorderBrush = SafeBrushFromString(settings.ResultsBoxBorderColor, "#FF49483E");
+            ResultsBoxBorder.Background = SafeBrushFromString(settings.ResultsBoxBackgroundColor, "#FF35362F");
+            ResultsTextBlock.Foreground = SafeBrushFromString(settings.ResultsBoxTextColor, "#FFF8F8F2");
+            MainBorder.BorderBrush = SafeBrushFromString(settings.WindowBorderColor, "#FF49483E");
+            MainBorder.Background = SafeBrushFromString(settings.WindowBackgroundColor, "#FF272822");
+            // Highlight color for selection
+            SearchTextBox.SelectionBrush = SafeBrushFromString(settings.HighlightColor, "#FFA6E22E");
+            
             debounceTimer = new DispatcherTimer();
             debounceTimer.Interval = TimeSpan.FromMilliseconds(DebounceMilliseconds);
             debounceTimer.Tick += DebounceTimer_Tick;
@@ -464,6 +477,19 @@ namespace chemmylemmy
                     this.Width = 420;
                     this.MinWidth = 420;
                 }
+            }
+        }
+
+        private System.Windows.Media.Brush SafeBrushFromString(string colorString, string fallback)
+        {
+            var brushConverter = new System.Windows.Media.BrushConverter();
+            try
+            {
+                return (System.Windows.Media.Brush)brushConverter.ConvertFromString(colorString);
+            }
+            catch
+            {
+                return (System.Windows.Media.Brush)brushConverter.ConvertFromString(fallback);
             }
         }
     }
