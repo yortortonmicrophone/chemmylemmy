@@ -17,6 +17,7 @@ namespace chemmylemmy
         private bool isRecordingHotkey = false;
         private MainWindow mainWindow;
         private DispatcherTimer keyCheckTimer;
+        private bool isLoadingSettings = false;
 
         public SettingsWindow(MainWindow mainWindow)
         {
@@ -90,6 +91,8 @@ namespace chemmylemmy
 
         private void LoadSettings()
         {
+            isLoadingSettings = true;
+            
             // Load current settings
             HotkeyTextBox.Text = settings.GetHotkeyDisplayString();
             
@@ -149,6 +152,18 @@ namespace chemmylemmy
             WindowBorderColorTextBox.Text = settings.WindowBorderColor;
             WindowBackgroundColorTextBox.Text = settings.WindowBackgroundColor;
             HighlightColorTextBox.Text = settings.HighlightColor;
+            
+            // Load notification color settings
+            NotificationBackgroundColorTextBox.Text = settings.NotificationBackgroundColor;
+            NotificationBorderColorTextBox.Text = settings.NotificationBorderColor;
+            NotificationTextColorTextBox.Text = settings.NotificationTextColor;
+            
+            // Load preset names
+            Preset1NameTextBox.Text = settings.Preset1.Name;
+            Preset2NameTextBox.Text = settings.Preset2.Name;
+            Preset3NameTextBox.Text = settings.Preset3.Name;
+            
+            isLoadingSettings = false;
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -179,78 +194,172 @@ namespace chemmylemmy
             // Capture all keyboard input
             this.PreviewKeyDown += SettingsWindow_PreviewKeyDown;
             this.PreviewKeyUp += SettingsWindow_PreviewKeyUp;
+            
+            // Start the timer to check for key combinations
+            keyCheckTimer.Start();
         }
 
         private void StopHotkeyRecording()
         {
             isRecordingHotkey = false;
-            keyCheckTimer.Stop();
             
+            ChangeHotkeyButton.Content = "Change";
+            ChangeHotkeyButton.Background = System.Windows.Media.Brushes.Green;
+            
+            // Stop capturing keyboard input
             this.PreviewKeyDown -= SettingsWindow_PreviewKeyDown;
             this.PreviewKeyUp -= SettingsWindow_PreviewKeyUp;
             
-            ChangeHotkeyButton.Content = "Change";
-            ChangeHotkeyButton.Background = System.Windows.Media.Brushes.White;
+            keyCheckTimer.Stop();
         }
 
         private void SettingsWindow_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            if (!isRecordingHotkey) return;
-            
             e.Handled = true;
-            
-            // Use timer to check keyboard state after a brief delay
-            keyCheckTimer.Stop();
             keyCheckTimer.Start();
         }
 
         private void SettingsWindow_PreviewKeyUp(object sender, KeyEventArgs e)
         {
-            if (!isRecordingHotkey) return;
             e.Handled = true;
+            keyCheckTimer.Start();
+        }
+
+        private void MonokaiTheme_Click(object sender, RoutedEventArgs e)
+        {
+            // Monokai theme colors
+            SearchBoxBorderColorTextBox.Text = "#FF49483E";
+            SearchBoxTextColorTextBox.Text = "#FFF8F8F2";
+            SearchBoxBackgroundColorTextBox.Text = "#FF57584F";
+            ResultsBoxBorderColorTextBox.Text = "#FF49483E";
+            ResultsBoxTextColorTextBox.Text = "#FFF8F8F2";
+            ResultsBoxBackgroundColorTextBox.Text = "#FF35362F";
+            WindowBorderColorTextBox.Text = "#FF49483E";
+            WindowBackgroundColorTextBox.Text = "#FF272822";
+            HighlightColorTextBox.Text = "#FFA6E22E";
+            NotificationBackgroundColorTextBox.Text = "#FF57584F";
+            NotificationBorderColorTextBox.Text = "#FF49483E";
+            NotificationTextColorTextBox.Text = "#FFF8F8F2";
+        }
+
+        private void DraculaTheme_Click(object sender, RoutedEventArgs e)
+        {
+            // Dracula theme colors
+            SearchBoxBorderColorTextBox.Text = "#FF6272A4";
+            SearchBoxTextColorTextBox.Text = "#FFF8F8F2";
+            SearchBoxBackgroundColorTextBox.Text = "#FF44475A";
+            ResultsBoxBorderColorTextBox.Text = "#FF6272A4";
+            ResultsBoxTextColorTextBox.Text = "#FFF8F8F2";
+            ResultsBoxBackgroundColorTextBox.Text = "#FF282A36";
+            WindowBorderColorTextBox.Text = "#FF6272A4";
+            WindowBackgroundColorTextBox.Text = "#FF282A36";
+            HighlightColorTextBox.Text = "#FFBD93F9"; // purple-ish
+            NotificationBackgroundColorTextBox.Text = "#FF44475A";
+            NotificationBorderColorTextBox.Text = "#FF6272A4";
+            NotificationTextColorTextBox.Text = "#FFF8F8F2";
+        }
+
+        private void SolarizedTheme_Click(object sender, RoutedEventArgs e)
+        {
+            // Solarized theme colors
+            SearchBoxBorderColorTextBox.Text = "#FF586E75";
+            SearchBoxTextColorTextBox.Text = "#FFFDF6E3"; // brightened text
+            SearchBoxBackgroundColorTextBox.Text = "#FF073642";
+            ResultsBoxBorderColorTextBox.Text = "#FF586E75";
+            ResultsBoxTextColorTextBox.Text = "#FFFDF6E3"; // brightened text
+            ResultsBoxBackgroundColorTextBox.Text = "#FF002B36";
+            WindowBorderColorTextBox.Text = "#FF586E75";
+            WindowBackgroundColorTextBox.Text = "#FF002B36";
+            HighlightColorTextBox.Text = "#FFECB464"; // yellow-orange
+            NotificationBackgroundColorTextBox.Text = "#FF073642";
+            NotificationBorderColorTextBox.Text = "#FF586E75";
+            NotificationTextColorTextBox.Text = "#FFFDF6E3"; // brightened text
+        }
+
+        private void NordTheme_Click(object sender, RoutedEventArgs e)
+        {
+            // Nord theme colors
+            SearchBoxBorderColorTextBox.Text = "#FF4C566A";
+            SearchBoxTextColorTextBox.Text = "#FFECEFF4";
+            SearchBoxBackgroundColorTextBox.Text = "#FF3B4252";
+            ResultsBoxBorderColorTextBox.Text = "#FF4C566A";
+            ResultsBoxTextColorTextBox.Text = "#FFECEFF4";
+            ResultsBoxBackgroundColorTextBox.Text = "#FF2E3440";
+            WindowBorderColorTextBox.Text = "#FF4C566A";
+            WindowBackgroundColorTextBox.Text = "#FF2E3440";
+            HighlightColorTextBox.Text = "#FFA3BE8C";
+            NotificationBackgroundColorTextBox.Text = "#FF3B4252";
+            NotificationBorderColorTextBox.Text = "#FF4C566A";
+            NotificationTextColorTextBox.Text = "#FFECEFF4";
+        }
+
+        private void GruvboxTheme_Click(object sender, RoutedEventArgs e)
+        {
+            // Gruvbox theme colors
+            SearchBoxBorderColorTextBox.Text = "#FF504945";
+            SearchBoxTextColorTextBox.Text = "#FFEBDBB2";
+            SearchBoxBackgroundColorTextBox.Text = "#FF3C3836";
+            ResultsBoxBorderColorTextBox.Text = "#FF504945";
+            ResultsBoxTextColorTextBox.Text = "#FFEBDBB2";
+            ResultsBoxBackgroundColorTextBox.Text = "#FF282828";
+            WindowBorderColorTextBox.Text = "#FF504945";
+            WindowBackgroundColorTextBox.Text = "#FF282828";
+            HighlightColorTextBox.Text = "#FFB8BB26";
+            NotificationBackgroundColorTextBox.Text = "#FF3C3836";
+            NotificationBorderColorTextBox.Text = "#FF504945";
+            NotificationTextColorTextBox.Text = "#FFEBDBB2";
         }
 
         private void ResetDefaults_Click(object sender, RoutedEventArgs e)
         {
-            var result = System.Windows.MessageBox.Show("Are you sure you want to reset all settings to defaults?", 
-                                       "Reset Settings", MessageBoxButton.YesNo, MessageBoxImage.Question);
-            
-            if (result == MessageBoxResult.Yes)
-            {
-                settings = new Settings();
-                LoadSettings();
-            }
+            // Reset to Monokai defaults
+            MonokaiTheme_Click(sender, e);
         }
 
         private void Save_Click(object sender, RoutedEventArgs e)
         {
-            // Save settings
-            if (DecimalPlacesComboBox.SelectedItem is ComboBoxItem selectedItem)
+            // Save decimal places
+            switch (DecimalPlacesComboBox.SelectedIndex)
             {
-                if (int.TryParse(selectedItem.Content.ToString(), out int decimalPlaces))
-                {
-                    settings.DecimalPlaces = decimalPlaces;
-                }
+                case 0:
+                    settings.DecimalPlaces = 2;
+                    break;
+                case 1:
+                    settings.DecimalPlaces = 3;
+                    break;
+                case 2:
+                    settings.DecimalPlaces = 4;
+                    break;
+                case 3:
+                    settings.DecimalPlaces = 5;
+                    break;
             }
             
+            // Save window scale
+            switch (ScaleComboBox.SelectedIndex)
+            {
+                case 0:
+                    settings.WindowScale = 1.0;
+                    break;
+                case 1:
+                    settings.WindowScale = 1.25;
+                    break;
+                case 2:
+                    settings.WindowScale = 1.5;
+                    break;
+                case 3:
+                    settings.WindowScale = 1.75;
+                    break;
+                case 4:
+                    settings.WindowScale = 2.0;
+                    break;
+            }
+            
+            // Save checkboxes
             settings.AutoHideOnFocusLoss = AutoHideCheckBox.IsChecked ?? true;
-            settings.ShowCopyConfirmation = ShowCopyConfirmationCheckBox.IsChecked ?? false;
+            settings.ShowCopyConfirmation = ShowCopyConfirmationCheckBox.IsChecked ?? true;
             
-            // Save scale setting
-            if (ScaleComboBox.SelectedItem is ComboBoxItem scaleItem)
-            {
-                var scaleText = scaleItem.Content.ToString();
-                if (scaleText.EndsWith("%"))
-                {
-                    var percentage = scaleText.TrimEnd('%');
-                    if (double.TryParse(percentage, out double percent))
-                    {
-                        settings.WindowScale = percent / 100.0;
-                    }
-                }
-            }
-
-            // Save color settings from TextBoxes
+            // Save color settings
             settings.SearchBoxBorderColor = SearchBoxBorderColorTextBox.Text;
             settings.SearchBoxTextColor = SearchBoxTextColorTextBox.Text;
             settings.SearchBoxBackgroundColor = SearchBoxBackgroundColorTextBox.Text;
@@ -261,28 +370,111 @@ namespace chemmylemmy
             settings.WindowBackgroundColor = WindowBackgroundColorTextBox.Text;
             settings.HighlightColor = HighlightColorTextBox.Text;
             
+            // Save notification color settings
+            settings.NotificationBackgroundColor = NotificationBackgroundColorTextBox.Text;
+            settings.NotificationBorderColor = NotificationBorderColorTextBox.Text;
+            settings.NotificationTextColor = NotificationTextColorTextBox.Text;
+            
+            // Save settings
             settings.Save();
             
-            // Notify main window about settings change
-            mainWindow.OnSettingsChanged(settings);
+            // Update main window
+            mainWindow.ApplySettings();
             
-            // Don't show notification and don't close - just trust it worked
+            // Show success message
+            System.Windows.MessageBox.Show("Settings saved successfully!", "Settings Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void Cancel_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
 
         protected override void OnKeyDown(System.Windows.Input.KeyEventArgs e)
         {
             if (e.Key == Key.Escape)
             {
-                if (isRecordingHotkey)
-                {
-                    StopHotkeyRecording();
-                }
-                else
-                {
-                    Close();
-                }
+                Close();
+                e.Handled = true;
             }
-            base.OnKeyDown(e);
+            else
+            {
+                base.OnKeyDown(e);
+            }
         }
+
+        private void SavePreset1_Click(object sender, RoutedEventArgs e)
+        {
+            settings.Preset1.CopyFrom(settings);
+            settings.Preset1.Name = Preset1NameTextBox.Text;
+            settings.Save();
+            System.Windows.MessageBox.Show("Preset 1 saved successfully!", "Preset Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void LoadPreset1_Click(object sender, RoutedEventArgs e)
+        {
+            if (!settings.Preset1.IsEmpty)
+            {
+                settings.Preset1.ApplyTo(settings);
+                LoadSettings();
+                System.Windows.MessageBox.Show("Preset 1 loaded successfully!", "Preset Loaded", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Preset 1 is empty. Save a theme first.", "Empty Preset", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void SavePreset2_Click(object sender, RoutedEventArgs e)
+        {
+            settings.Preset2.CopyFrom(settings);
+            settings.Preset2.Name = Preset2NameTextBox.Text;
+            settings.Save();
+            System.Windows.MessageBox.Show("Preset 2 saved successfully!", "Preset Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void LoadPreset2_Click(object sender, RoutedEventArgs e)
+        {
+            if (!settings.Preset2.IsEmpty)
+            {
+                settings.Preset2.ApplyTo(settings);
+                LoadSettings();
+                System.Windows.MessageBox.Show("Preset 2 loaded successfully!", "Preset Loaded", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Preset 2 is empty. Save a theme first.", "Empty Preset", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void SavePreset3_Click(object sender, RoutedEventArgs e)
+        {
+            settings.Preset3.CopyFrom(settings);
+            settings.Preset3.Name = Preset3NameTextBox.Text;
+            settings.Save();
+            System.Windows.MessageBox.Show("Preset 3 saved successfully!", "Preset Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        private void LoadPreset3_Click(object sender, RoutedEventArgs e)
+        {
+            if (!settings.Preset3.IsEmpty)
+            {
+                settings.Preset3.ApplyTo(settings);
+                LoadSettings();
+                System.Windows.MessageBox.Show("Preset 3 loaded successfully!", "Preset Loaded", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                System.Windows.MessageBox.Show("Preset 3 is empty. Save a theme first.", "Empty Preset", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void ApplyThemeColors()
+        {
+            // Simple dark gray theme - no complex color matching
+            // This will be replaced with proper theming later
+        }
+
+
     }
 } 

@@ -1,31 +1,13 @@
 <Window x:Class="chemmylemmy.SettingsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Settings v1.1" Width="500" Height="400"
-        WindowStyle="None" ResizeMode="CanResize" ShowInTaskbar="False" 
-        Background="Transparent" AllowsTransparency="True" 
-        WindowStartupLocation="CenterScreen"
-        FontFamily="Cascadia Mono, Consolas, 'Segoe UI', monospace">
-    <Window.Resources>
-        <!-- Monokai-inspired colors and brushes -->
-        <Color x:Key="MonokaiBackground">#FF272822</Color>
-        <Color x:Key="MonokaiAccent">#FFFFFFFF</Color>
-        <Color x:Key="MonokaiBorder">#FF49483E</Color>
-        <Color x:Key="MonokaiText">#FFF8F8F2</Color>
-        <Color x:Key="MonokaiSecondaryText">#FF75715E</Color>
-        <Color x:Key="MonokaiHighlight">#FFA6E22E</Color>
-        <SolidColorBrush x:Key="WindowBackgroundBrush" Color="{StaticResource MonokaiBackground}"/>
-        <SolidColorBrush x:Key="AccentBrush" Color="{StaticResource MonokaiAccent}"/>
-        <SolidColorBrush x:Key="BorderBrush" Color="{StaticResource MonokaiBorder}"/>
-        <SolidColorBrush x:Key="TextBrush" Color="{StaticResource MonokaiText}"/>
-        <SolidColorBrush x:Key="SecondaryTextBrush" Color="{StaticResource MonokaiSecondaryText}"/>
-        <SolidColorBrush x:Key="HighlightBrush" Color="{StaticResource MonokaiHighlight}"/>
-        <SolidColorBrush x:Key="SearchBoxBackgroundBrush" Color="#FF57584F"/>
-        <SolidColorBrush x:Key="ResultsBoxBackgroundBrush" Color="#FF35362F"/>
-    </Window.Resources>
+        Title="Settings" Height="600" Width="500" 
+        WindowStyle="None" AllowsTransparency="True" 
+        Background="#FF222222" ResizeMode="NoResize"
+        Topmost="True" ShowInTaskbar="False">
     
-    <Border CornerRadius="10" Padding="20" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-            Background="{StaticResource WindowBackgroundBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+    <Border x:Name="MainBorder" CornerRadius="8" BorderThickness="1" 
+            Background="#FF222222" BorderBrush="#FF444444">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -34,183 +16,503 @@
             </Grid.RowDefinitions>
             
             <!-- Title Bar -->
-            <Grid Grid.Row="0" Margin="0,0,0,20">
+            <Grid Grid.Row="0" Background="#FF333333" Height="30">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
                 
-                <TextBlock Grid.Column="0" Text="Settings" FontSize="18" FontWeight="Bold" 
-                           Foreground="{StaticResource TextBrush}" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="0" Text="Settings" 
+                           Foreground="#FFF0F0F0" FontSize="14" FontWeight="Bold"
+                           VerticalAlignment="Center" Margin="10,0,0,0"/>
                 
                 <Button Grid.Column="1" x:Name="CloseButton" Content="✕" Width="30" Height="30"
-                        Background="Transparent" Foreground="{StaticResource TextBrush}" 
+                        Background="Transparent" Foreground="#FFF0F0F0" 
                         BorderThickness="0" FontSize="14" Click="CloseButton_Click"/>
             </Grid>
             
             <!-- Settings Content -->
-            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
-                <StackPanel>
-                    <!-- Hotkey Settings -->
-                    <Border CornerRadius="5" Background="{StaticResource SearchBoxBackgroundBrush}" 
-                            Margin="0,0,0,15" Padding="15" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-                        <StackPanel>
-                            <TextBlock Text="Hotkey Settings" FontSize="14" FontWeight="Bold" 
-                                       Foreground="{StaticResource TextBrush}" Margin="0,0,0,10"/>
+            <TabControl x:Name="MainTabControl" Grid.Row="1" Background="Transparent" BorderThickness="0" VirtualizingPanel.IsVirtualizing="False">
+                <!-- General Settings Tab -->
+                <TabItem Header="General" Foreground="#FFF0F0F0" Background="Transparent">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Background="Transparent">
+                        <StackPanel Margin="15">
+                            <!-- Hotkey Settings -->
+                            <Border CornerRadius="5" Background="#FF2A2A2A" 
+                                    Margin="0,0,0,12" Padding="12" BorderBrush="#FF444444" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="Hotkey Settings" FontSize="14" FontWeight="Bold" 
+                                               Foreground="#FFF0F0F0" Margin="0,0,0,10"/>
+                                    
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <TextBlock Grid.Column="0" Text="Search Hotkey:" 
+                                                   Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        
+                                        <TextBox Grid.Column="1" x:Name="HotkeyTextBox" Height="26" 
+                                                 Background="Transparent" Foreground="#FFF0F0F0" 
+                                                 BorderThickness="0" Padding="6,0" IsReadOnly="True"
+                                                 Text="Ctrl+Shift+Z" VerticalAlignment="Center"/>
+                                        
+                                        <Button Grid.Column="2" x:Name="ChangeHotkeyButton" Content="Change" Width="80" Height="26" Margin="10,0,0,0"
+                                                Background="#FF444444" Foreground="#FFF0F0F0"
+                                                BorderThickness="0" Click="ChangeHotkey_Click"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
                             
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
-                                </Grid.ColumnDefinitions>
-                                
-                                <TextBlock Grid.Column="0" Text="Search Hotkey:" 
-                                           Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                
-                                <TextBox Grid.Column="1" x:Name="HotkeyTextBox" Height="26" 
-                                         Background="Transparent" Foreground="{StaticResource TextBrush}" 
-                                         BorderThickness="0" Padding="6,0" IsReadOnly="True"
-                                         Text="Ctrl+Shift+Z" VerticalAlignment="Center"/>
-                                
-                                <Button Grid.Column="2" x:Name="ChangeHotkeyButton" Content="Change" Width="80" Height="26" Margin="10,0,0,0"
-                                        Background="{StaticResource AccentBrush}" Foreground="{StaticResource WindowBackgroundBrush}"
-                                        BorderThickness="0" Click="ChangeHotkey_Click"/>
-                            </Grid>
+                            <!-- Display Settings -->
+                            <Border CornerRadius="5" Background="#FF2A2A2A" 
+                                    Margin="0,0,0,12" Padding="12" BorderBrush="#FF444444" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="Display Settings" FontSize="14" FontWeight="Bold" 
+                                               Foreground="#FFF0F0F0" Margin="0,0,0,10"/>
+                                    
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <TextBlock Grid.Column="0" Text="Decimal Places:" 
+                                                   Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        
+                                        <ComboBox Grid.Column="1" x:Name="DecimalPlacesComboBox" Height="26"
+                                                  Background="#FF333333" Foreground="#FFF0F0F0"
+                                                  BorderBrush="#FF444444" BorderThickness="1">
+                                            <ComboBoxItem Content="2" IsSelected="True"/>
+                                            <ComboBoxItem Content="3"/>
+                                            <ComboBoxItem Content="4"/>
+                                            <ComboBoxItem Content="5"/>
+                                        </ComboBox>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <TextBlock Grid.Column="0" Text="Window Scale:" 
+                                                   Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                                        
+                                        <ComboBox Grid.Column="1" x:Name="ScaleComboBox" Height="26"
+                                                  Background="#FF333333" Foreground="#FFF0F0F0"
+                                                  BorderBrush="#FF444444" BorderThickness="1">
+                                            <ComboBoxItem Content="100%" IsSelected="True"/>
+                                            <ComboBoxItem Content="125%"/>
+                                            <ComboBoxItem Content="150%"/>
+                                            <ComboBoxItem Content="175%"/>
+                                            <ComboBoxItem Content="200%"/>
+                                        </ComboBox>
+                                    </Grid>
+                                    
+                                    <CheckBox x:Name="AutoHideCheckBox" Content="Auto-hide on focus loss" 
+                                              Foreground="#FFF0F0F0" IsChecked="True" Margin="0,5,0,0"/>
+                                    <CheckBox x:Name="ShowCopyConfirmationCheckBox" Content="Show copy confirmation" 
+                                              Foreground="#FFF0F0F0" IsChecked="True" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
-                    </Border>
-                    
-                    <!-- Display Settings -->
-                    <Border CornerRadius="5" Background="{StaticResource SearchBoxBackgroundBrush}" 
-                            Margin="0,0,0,15" Padding="15" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-                        <StackPanel>
-                            <TextBlock Text="Display Settings" FontSize="14" FontWeight="Bold" 
-                                       Foreground="{StaticResource TextBrush}" Margin="0,0,0,10"/>
-                            
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                
-                                <TextBlock Grid.Column="0" Text="Decimal Places:" 
-                                           Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                
-                                <ComboBox Grid.Column="1" x:Name="DecimalPlacesComboBox" Height="26"
-                                          Background="White" Foreground="Black"
-                                          BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-                                    <ComboBoxItem Content="2" IsSelected="True"/>
-                                    <ComboBoxItem Content="3"/>
-                                    <ComboBoxItem Content="4"/>
-                                    <ComboBoxItem Content="5"/>
-                                </ComboBox>
-                            </Grid>
-                            
-                            <Grid Margin="0,0,0,10">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                
-                                <TextBlock Grid.Column="0" Text="Window Scale:" 
-                                           Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                
-                                <ComboBox Grid.Column="1" x:Name="ScaleComboBox" Height="26"
-                                          Background="White" Foreground="Black"
-                                          BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-                                    <ComboBoxItem Content="100%" IsSelected="True"/>
-                                    <ComboBoxItem Content="125%"/>
-                                    <ComboBoxItem Content="150%"/>
-                                    <ComboBoxItem Content="175%"/>
-                                    <ComboBoxItem Content="200%"/>
-                                </ComboBox>
-                            </Grid>
-                            
-                            <CheckBox x:Name="AutoHideCheckBox" Content="Auto-hide on focus loss" 
-                                      Foreground="{StaticResource TextBrush}" IsChecked="True" Margin="0,5,0,0"/>
-                            <CheckBox x:Name="ShowCopyConfirmationCheckBox" Content="Show copy confirmation" 
-                                      Foreground="{StaticResource TextBrush}" IsChecked="True" Margin="0,5,0,0"/>
+                    </ScrollViewer>
+                </TabItem>
+                
+                <!-- Colors Tab -->
+                <TabItem Header="Colors" Foreground="#FFF0F0F0" Background="Transparent">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Background="Transparent">
+                        <StackPanel Margin="15">
+                            <!-- Built-in Themes -->
+                            <Border CornerRadius="5" Background="#FF2A2A2A" 
+                                    Margin="0,0,0,12" Padding="12" BorderBrush="#FF444444" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="Built-in Themes" FontSize="14" FontWeight="Bold"
+                                               Foreground="#FFF0F0F0" Margin="0,0,0,10"/>
+                                    
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Content="Monokai" Width="80" Height="26" Margin="0,0,5,0"
+                                                Background="#FF444444" Foreground="#FFF0F0F0"
+                                                BorderThickness="0" FontSize="10" Click="MonokaiTheme_Click"/>
+                                        <Button Content="Dracula" Width="80" Height="26" Margin="5,0"
+                                                Background="Transparent" Foreground="#FFF0F0F0"
+                                                BorderBrush="#FF444444" BorderThickness="1" FontSize="10" Click="DraculaTheme_Click"/>
+                                        <Button Content="Solarized" Width="80" Height="26" Margin="5,0"
+                                                Background="Transparent" Foreground="#FFF0F0F0"
+                                                BorderBrush="#FF444444" BorderThickness="1" FontSize="10" Click="SolarizedTheme_Click"/>
+                                        <Button Content="Nord" Width="80" Height="26" Margin="5,0"
+                                                Background="Transparent" Foreground="#FFF0F0F0"
+                                                BorderBrush="#FF444444" BorderThickness="1" FontSize="10" Click="NordTheme_Click"/>
+                                        <Button Content="Gruvbox" Width="80" Height="26" Margin="5,0"
+                                                Background="Transparent" Foreground="#FFF0F0F0"
+                                                BorderBrush="#FF444444" BorderThickness="1" FontSize="10" Click="GruvboxTheme_Click"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Color Presets -->
+                            <Border CornerRadius="5" Background="#FF2A2A2A" 
+                                    Margin="0,0,0,12" Padding="12" BorderBrush="#FF444444" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="Custom Color Presets" FontSize="14" FontWeight="Bold"
+                                               Foreground="#FFF0F0F0" Margin="0,0,0,10"/>
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <!-- Preset 1 -->
+                                        <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                            <TextBlock Text="Preset 1" FontSize="11" FontWeight="Bold"
+                                                       Foreground="#FFF0F0F0" Margin="0,0,0,5"/>
+                                            <TextBox x:Name="Preset1NameTextBox" Height="22" FontSize="10"
+                                                     Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                     BorderThickness="1" Margin="0,0,0,5" Text=""/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Button Content="Save" Width="40" Height="22" Margin="0,0,2,0"
+                                                        Background="#FF444444" Foreground="#FFF0F0F0"
+                                                        BorderThickness="0" FontSize="9" Click="SavePreset1_Click"/>
+                                                <Button Content="Load" Width="40" Height="22" Margin="2,0,0,0"
+                                                        Background="Transparent" Foreground="#FFF0F0F0"
+                                                        BorderBrush="#FF444444" BorderThickness="1" FontSize="9" Click="LoadPreset1_Click"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        
+                                        <!-- Preset 2 -->
+                                        <StackPanel Grid.Column="1" Margin="5,0">
+                                            <TextBlock Text="Preset 2" FontSize="11" FontWeight="Bold"
+                                                       Foreground="#FFF0F0F0" Margin="0,0,0,5"/>
+                                            <TextBox x:Name="Preset2NameTextBox" Height="22" FontSize="10"
+                                                     Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                     BorderThickness="1" Margin="0,0,0,5" Text=""/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Button Content="Save" Width="40" Height="22" Margin="0,0,2,0"
+                                                        Background="#FF444444" Foreground="#FFF0F0F0"
+                                                        BorderThickness="0" FontSize="9" Click="SavePreset2_Click"/>
+                                                <Button Content="Load" Width="40" Height="22" Margin="2,0,0,0"
+                                                        Background="Transparent" Foreground="#FFF0F0F0"
+                                                        BorderBrush="#FF444444" BorderThickness="1" FontSize="9" Click="LoadPreset2_Click"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                        
+                                        <!-- Preset 3 -->
+                                        <StackPanel Grid.Column="2" Margin="5,0,0,0">
+                                            <TextBlock Text="Preset 3" FontSize="11" FontWeight="Bold"
+                                                       Foreground="#FFF0F0F0" Margin="0,0,0,5"/>
+                                            <TextBox x:Name="Preset3NameTextBox" Height="22" FontSize="10"
+                                                     Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                     BorderThickness="1" Margin="0,0,0,5" Text=""/>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Button Content="Save" Width="40" Height="22" Margin="0,0,2,0"
+                                                        Background="#FF444444" Foreground="#FFF0F0F0"
+                                                        BorderThickness="0" FontSize="9" Click="SavePreset3_Click"/>
+                                                <Button Content="Load" Width="40" Height="22" Margin="2,0,0,0"
+                                                        Background="Transparent" Foreground="#FFF0F0F0"
+                                                        BorderBrush="#FF444444" BorderThickness="1" FontSize="9" Click="LoadPreset3_Click"/>
+                                            </StackPanel>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <!-- Color Settings Grid -->
+                            <Border CornerRadius="5" Background="#FF2A2A2A" 
+                                    Margin="0,0,0,12" Padding="12" BorderBrush="#FF444444" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="Color Settings" FontSize="14" FontWeight="Bold"
+                                               Foreground="#FFF0F0F0" Margin="0,0,0,10"/>
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <!-- Search Box Colors -->
+                                        <StackPanel Grid.Column="0" Margin="0,0,5,0">
+                                            <TextBlock Text="Search Box" FontSize="12" FontWeight="Bold"
+                                                       Foreground="#FFF0F0F0" Margin="0,0,0,5"/>
+                                            
+                                            <Grid Margin="0,0,0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="Border:" FontSize="10" 
+                                                           Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                <TextBox Grid.Column="1" x:Name="SearchBoxBorderColorTextBox" Height="20" FontSize="9"
+                                                         Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                         BorderThickness="1" Text="#FF444444"/>
+                                            </Grid>
+                                            
+                                            <Grid Margin="0,0,0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="Text:" FontSize="10" 
+                                                           Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                <TextBox Grid.Column="1" x:Name="SearchBoxTextColorTextBox" Height="20" FontSize="9"
+                                                         Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                         BorderThickness="1" Text="#FFF0F0F0"/>
+                                            </Grid>
+                                            
+                                            <Grid Margin="0,0,0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="Background:" FontSize="10" 
+                                                           Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                <TextBox Grid.Column="1" x:Name="SearchBoxBackgroundColorTextBox" Height="20" FontSize="9"
+                                                         Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                         BorderThickness="1" Text="#FF2A2A2A"/>
+                                            </Grid>
+                                        </StackPanel>
+                                        
+                                        <!-- Results Box Colors -->
+                                        <StackPanel Grid.Column="1" Margin="5,0,0,0">
+                                            <TextBlock Text="Results Box" FontSize="12" FontWeight="Bold"
+                                                       Foreground="#FFF0F0F0" Margin="0,0,0,5"/>
+                                            
+                                            <Grid Margin="0,0,0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="Border:" FontSize="10" 
+                                                           Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                <TextBox Grid.Column="1" x:Name="ResultsBoxBorderColorTextBox" Height="20" FontSize="9"
+                                                         Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                         BorderThickness="1" Text="#FF444444"/>
+                                            </Grid>
+                                            
+                                            <Grid Margin="0,0,0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="Text:" FontSize="10" 
+                                                           Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                <TextBox Grid.Column="1" x:Name="ResultsBoxTextColorTextBox" Height="20" FontSize="9"
+                                                         Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                         BorderThickness="1" Text="#FFF0F0F0"/>
+                                            </Grid>
+                                            
+                                            <Grid Margin="0,0,0,5">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock Grid.Column="0" Text="Background:" FontSize="10" 
+                                                           Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                                <TextBox Grid.Column="1" x:Name="ResultsBoxBackgroundColorTextBox" Height="20" FontSize="9"
+                                                         Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                         BorderThickness="1" Text="#FF2A2A2A"/>
+                                            </Grid>
+                                        </StackPanel>
+                                    </Grid>
+                                    
+                                    <!-- Window Colors -->
+                                    <Grid Margin="0,10,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <Grid Grid.Column="0" Margin="0,0,5,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Window Border:" FontSize="10" 
+                                                       Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                            <TextBox Grid.Column="1" x:Name="WindowBorderColorTextBox" Height="20" FontSize="9"
+                                                     Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                     BorderThickness="1" Text="#FF444444"/>
+                                        </Grid>
+                                        
+                                        <Grid Grid.Column="1" Margin="5,0,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Window Background:" FontSize="10" 
+                                                       Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                            <TextBox Grid.Column="1" x:Name="WindowBackgroundColorTextBox" Height="20" FontSize="9"
+                                                     Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                     BorderThickness="1" Text="#FF222222"/>
+                                        </Grid>
+                                    </Grid>
+                                    
+                                    <!-- Highlight Color -->
+                                    <Grid Margin="0,10,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Highlight Color:" FontSize="10" 
+                                                   Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                        <TextBox Grid.Column="1" x:Name="HighlightColorTextBox" Height="20" FontSize="9"
+                                                 Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                 BorderThickness="1" Text="#FF444444"/>
+                                    </Grid>
+                                    
+                                    <!-- Notification Colors -->
+                                    <TextBlock Text="Notification Colors" FontSize="12" FontWeight="Bold"
+                                               Foreground="#FFF0F0F0" Margin="0,15,0,5"/>
+                                    
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        
+                                        <Grid Grid.Column="0" Margin="0,0,5,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Background:" FontSize="10" 
+                                                       Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                            <TextBox Grid.Column="1" x:Name="NotificationBackgroundColorTextBox" Height="20" FontSize="9"
+                                                     Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                     BorderThickness="1" Text="#FF2A2A2A"/>
+                                        </Grid>
+                                        
+                                        <Grid Grid.Column="1" Margin="5,0,0,0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="0" Text="Border:" FontSize="10" 
+                                                       Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                            <TextBox Grid.Column="1" x:Name="NotificationBorderColorTextBox" Height="20" FontSize="9"
+                                                     Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                     BorderThickness="1" Text="#FF444444"/>
+                                        </Grid>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,5,0,0">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Text:" FontSize="10" 
+                                                   Foreground="#FFF0F0F0" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                        <TextBox Grid.Column="1" x:Name="NotificationTextColorTextBox" Height="20" FontSize="9"
+                                                 Background="#FF333333" Foreground="#FFF0F0F0" BorderBrush="#FF444444" 
+                                                 BorderThickness="1" Text="#FFF0F0F0"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
-                    </Border>
-
-                    <!-- Color Settings -->
-                    <Border CornerRadius="5" Background="{StaticResource SearchBoxBackgroundBrush}"
-                            Margin="0,0,0,15" Padding="15" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-                        <StackPanel>
-                            <TextBlock Text="Color Settings" FontSize="14" FontWeight="Bold"
-                                       Foreground="{StaticResource TextBrush}" Margin="0,0,0,10"/>
-
-                            <Grid Margin="0,0,0,10">
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-
-                                <TextBlock Grid.Row="0" Grid.Column="0" Text="Search Box Border Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
-                                <TextBox Grid.Row="0" Grid.Column="1" x:Name="SearchBoxBorderColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1"/>
-
-                                <TextBlock Grid.Row="1" Grid.Column="0" Text="Search Box Text Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
-                                <TextBox Grid.Row="1" Grid.Column="1" x:Name="SearchBoxTextColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
-
-                                <TextBlock Grid.Row="2" Grid.Column="0" Text="Search Box Background Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
-                                <TextBox Grid.Row="2" Grid.Column="1" x:Name="SearchBoxBackgroundColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
-
-                                <TextBlock Grid.Row="3" Grid.Column="0" Text="Results Box Border Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
-                                <TextBox Grid.Row="3" Grid.Column="1" x:Name="ResultsBoxBorderColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
-
-                                <TextBlock Grid.Row="4" Grid.Column="0" Text="Results Box Text Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
-                                <TextBox Grid.Row="4" Grid.Column="1" x:Name="ResultsBoxTextColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
-
-                                <TextBlock Grid.Row="5" Grid.Column="0" Text="Results Box Background Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
-                                <TextBox Grid.Row="5" Grid.Column="1" x:Name="ResultsBoxBackgroundColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
-
-                                <TextBlock Grid.Row="6" Grid.Column="0" Text="Window Border Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
-                                <TextBox Grid.Row="6" Grid.Column="1" x:Name="WindowBorderColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
-
-                                <TextBlock Grid.Row="7" Grid.Column="0" Text="Window Background Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
-                                <TextBox Grid.Row="7" Grid.Column="1" x:Name="WindowBackgroundColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
-
-                                <TextBlock Grid.Row="8" Grid.Column="0" Text="Highlight Color:" Foreground="{StaticResource TextBrush}" VerticalAlignment="Center" Margin="0,5,10,0"/>
-                                <TextBox Grid.Row="8" Grid.Column="1" x:Name="HighlightColorTextBox" Height="26" Background="White" Foreground="Black" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0,5,0,0"/>
-                            </Grid>
-                        </StackPanel>
-                    </Border>
-                    
-                    <!-- About Section -->
-                    <Border CornerRadius="5" Background="{StaticResource SearchBoxBackgroundBrush}" 
-                            Margin="0,0,0,15" Padding="15" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
-                        <StackPanel>
-                            <TextBlock Text="About" FontSize="14" FontWeight="Bold" 
-                                       Foreground="{StaticResource TextBrush}" Margin="0,0,0,10"/>
+                    </ScrollViewer>
+                </TabItem>
+                
+                <!-- About Tab -->
+                <TabItem Header="About" Foreground="#FFF0F0F0" Background="Transparent">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" Background="Transparent">
+                        <StackPanel Margin="15">
+                            <!-- App Info -->
+                            <Border CornerRadius="5" Background="#FF2A2A2A" 
+                                    Margin="0,0,0,12" Padding="15" BorderBrush="#FF444444" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="ChemmyLemmy" FontSize="18" FontWeight="Bold" 
+                                               Foreground="#FFF0F0F0" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                                    <TextBlock Text="A chemical element lookup tool" FontSize="12" 
+                                               Foreground="#FFF0F0F0" HorizontalAlignment="Center" Margin="0,0,0,15"/>
+                                    
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Version:" FontSize="11" FontWeight="Bold"
+                                                   Foreground="#FFF0F0F0" Margin="0,0,10,0"/>
+                                        <TextBlock Grid.Column="1" Text="1.0.0" FontSize="11"
+                                                   Foreground="#FFF0F0F0"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="Author:" FontSize="11" FontWeight="Bold"
+                                                   Foreground="#FFF0F0F0" Margin="0,0,10,0"/>
+                                        <TextBlock Grid.Column="1" Text="ChemmyLemmy Team" FontSize="11"
+                                                   Foreground="#FFF0F0F0"/>
+                                    </Grid>
+                                    
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0" Text="License:" FontSize="11" FontWeight="Bold"
+                                                   Foreground="#FFF0F0F0" Margin="0,0,10,0"/>
+                                        <TextBlock Grid.Column="1" Text="MIT License" FontSize="11"
+                                                   Foreground="#FFF0F0F0"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
                             
-                            <TextBlock Text="ChemmyLemmy v1.1" Foreground="{StaticResource TextBrush}" Margin="0,0,0,5"/>
-                            <TextBlock Text="Chemical formula parser and molar mass calculator" 
-                                       Foreground="{StaticResource SecondaryTextBrush}" FontSize="12"/>
+                            <!-- Features -->
+                            <Border CornerRadius="5" Background="#FF2A2A2A" 
+                                    Margin="0,0,0,12" Padding="15" BorderBrush="#FF444444" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="Features" FontSize="14" FontWeight="Bold" 
+                                               Foreground="#FFF0F0F0" Margin="0,0,0,10"/>
+                                    
+                                    <TextBlock Text="• Chemical element lookup by name or symbol" FontSize="11" 
+                                               Foreground="#FFF0F0F0" Margin="0,0,0,5"/>
+                                    <TextBlock Text="• Detailed element information" FontSize="11" 
+                                               Foreground="#FFF0F0F0" Margin="0,0,0,5"/>
+                                    <TextBlock Text="• Customizable themes and colors" FontSize="11" 
+                                               Foreground="#FFF0F0F0" Margin="0,0,0,5"/>
+                                    <TextBlock Text="• Global hotkey support" FontSize="11" 
+                                               Foreground="#FFF0F0F0" Margin="0,0,0,5"/>
+                                    <TextBlock Text="• Copy to clipboard functionality" FontSize="11" 
+                                               Foreground="#FFF0F0F0" Margin="0,0,0,5"/>
+                                    <TextBlock Text="• Auto-hide on focus loss" FontSize="11" 
+                                               Foreground="#FFF0F0F0" Margin="0,0,0,5"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <!-- Data Sources -->
+                            <Border CornerRadius="5" Background="#FF2A2A2A" 
+                                    Margin="0,0,0,12" Padding="15" BorderBrush="#FF444444" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="Data Sources" FontSize="14" FontWeight="Bold" 
+                                               Foreground="#FFF0F0F0" Margin="0,0,0,10"/>
+                                    
+                                    <TextBlock Text="Element data is sourced from PubChem, a comprehensive chemical database maintained by the National Institutes of Health (NIH)." FontSize="11" 
+                                               Foreground="#FFF0F0F0" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
                         </StackPanel>
-                    </Border>
-                </StackPanel>
-            </ScrollViewer>
+                    </ScrollViewer>
+                </TabItem>
+            </TabControl>
             
             <!-- Bottom Buttons -->
-            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,20,0,0">
-                <Button Content="Reset to Defaults" Width="120" Height="30" Margin="0,0,10,0"
-                        Background="Transparent" Foreground="{StaticResource TextBrush}" 
-                        BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Click="ResetDefaults_Click"/>
-                
-                <Button Content="Save" Width="80" Height="30"
-                        Background="{StaticResource AccentBrush}" Foreground="{StaticResource WindowBackgroundBrush}" 
+            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right" Margin="15">
+                <Button x:Name="SaveButton" Content="Save" Width="80" Height="30" Margin="0,0,10,0"
+                        Background="#FF444444" Foreground="#FFF0F0F0"
                         BorderThickness="0" Click="Save_Click"/>
+                <Button x:Name="ResetButton" Content="Reset Defaults" Width="100" Height="30" Margin="0,0,10,0"
+                        Background="Transparent" Foreground="#FFF0F0F0"
+                        BorderBrush="#FF444444" BorderThickness="1" Click="ResetDefaults_Click"/>
+                <Button x:Name="CancelButton" Content="Cancel" Width="80" Height="30"
+                        Background="Transparent" Foreground="#FFF0F0F0"
+                        BorderBrush="#FF444444" BorderThickness="1" Click="Cancel_Click"/>
             </StackPanel>
         </Grid>
     </Border>

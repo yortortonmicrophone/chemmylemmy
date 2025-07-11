@@ -32,6 +32,102 @@ namespace chemmylemmy
         public string WindowBackgroundColor { get; set; } = "#FF272822"; // Monokai background
         public string HighlightColor { get; set; } = "#FFA6E22E"; // Monokai highlight (green)
 
+        // Notification color settings
+        public string NotificationBackgroundColor { get; set; } = "#FF57584F"; // Same as search box
+        public string NotificationBorderColor { get; set; } = "#FF49483E"; // Same as window border
+        public string NotificationTextColor { get; set; } = "#FFF8F8F2"; // Same as search box
+
+        // Color preset settings
+        public ColorPreset Preset1 { get; set; } = new ColorPreset();
+        public ColorPreset Preset2 { get; set; } = new ColorPreset();
+        public ColorPreset Preset3 { get; set; } = new ColorPreset();
+
+        // Built-in themes
+        public static readonly ColorPreset MonokaiTheme = new ColorPreset
+        {
+            Name = "Monokai",
+            SearchBoxBorderColor = "#FFFFFFFF",
+            SearchBoxTextColor = "#FFF8F8F2",
+            SearchBoxBackgroundColor = "#FF57584F",
+            ResultsBoxBorderColor = "#FF49483E",
+            ResultsBoxTextColor = "#FFF8F8F2",
+            ResultsBoxBackgroundColor = "#FF35362F",
+            WindowBorderColor = "#FF49483E",
+            WindowBackgroundColor = "#FF272822",
+            HighlightColor = "#FFA6E22E",
+            NotificationBackgroundColor = "#FF57584F",
+            NotificationBorderColor = "#FF49483E",
+            NotificationTextColor = "#FFF8F8F2"
+        };
+
+        public static readonly ColorPreset DraculaTheme = new ColorPreset
+        {
+            Name = "Dracula",
+            SearchBoxBorderColor = "#FF6272A4",
+            SearchBoxTextColor = "#FFF8F8F2",
+            SearchBoxBackgroundColor = "#FF44475A",
+            ResultsBoxBorderColor = "#FF6272A4",
+            ResultsBoxTextColor = "#FFF8F8F2",
+            ResultsBoxBackgroundColor = "#FF282A36",
+            WindowBorderColor = "#FF6272A4",
+            WindowBackgroundColor = "#FF282A36",
+            HighlightColor = "#FFFF79C6",
+            NotificationBackgroundColor = "#FF44475A",
+            NotificationBorderColor = "#FF6272A4",
+            NotificationTextColor = "#FFF8F8F2"
+        };
+
+        public static readonly ColorPreset SolarizedDarkTheme = new ColorPreset
+        {
+            Name = "Solarized Dark",
+            SearchBoxBorderColor = "#FF586E75",
+            SearchBoxTextColor = "#FFE6E6E6",
+            SearchBoxBackgroundColor = "#FF073642",
+            ResultsBoxBorderColor = "#FF586E75",
+            ResultsBoxTextColor = "#FFE6E6E6",
+            ResultsBoxBackgroundColor = "#FF002B36",
+            WindowBorderColor = "#FF586E75",
+            WindowBackgroundColor = "#FF002B36",
+            HighlightColor = "#FFB58900",
+            NotificationBackgroundColor = "#FF073642",
+            NotificationBorderColor = "#FF586E75",
+            NotificationTextColor = "#FFE6E6E6"
+        };
+
+        public static readonly ColorPreset NordTheme = new ColorPreset
+        {
+            Name = "Nord",
+            SearchBoxBorderColor = "#FF5E81AC",
+            SearchBoxTextColor = "#FFECEFF4",
+            SearchBoxBackgroundColor = "#FF4C566A",
+            ResultsBoxBorderColor = "#FF5E81AC",
+            ResultsBoxTextColor = "#FFECEFF4",
+            ResultsBoxBackgroundColor = "#FF3B4252",
+            WindowBorderColor = "#FF5E81AC",
+            WindowBackgroundColor = "#FF2E3440",
+            HighlightColor = "#FF88C0D0",
+            NotificationBackgroundColor = "#FF4C566A",
+            NotificationBorderColor = "#FF5E81AC",
+            NotificationTextColor = "#FFECEFF4"
+        };
+
+        public static readonly ColorPreset GruvboxDarkTheme = new ColorPreset
+        {
+            Name = "Gruvbox Dark",
+            SearchBoxBorderColor = "#FF928374",
+            SearchBoxTextColor = "#FFEBDBB2",
+            SearchBoxBackgroundColor = "#FF504945",
+            ResultsBoxBorderColor = "#FF928374",
+            ResultsBoxTextColor = "#FFEBDBB2",
+            ResultsBoxBackgroundColor = "#FF3C3836",
+            WindowBorderColor = "#FF928374",
+            WindowBackgroundColor = "#FF282828",
+            HighlightColor = "#FFFB4934",
+            NotificationBackgroundColor = "#FF504945",
+            NotificationBorderColor = "#FF928374",
+            NotificationTextColor = "#FFEBDBB2"
+        };
+
         public static Settings Load()
         {
             try

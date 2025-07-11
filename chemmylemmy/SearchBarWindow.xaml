@@ -64,20 +64,35 @@
             
             <!-- Copy Confirmation Overlay -->
             <Border x:Name="CopyConfirmationOverlay" 
-                    Background="{StaticResource AccentBrush}" 
-                    CornerRadius="5" 
-                    Padding="12,8" 
+                    Background="{StaticResource HighlightBrush}" 
+                    CornerRadius="8" 
+                    Padding="16,10" 
                     HorizontalAlignment="Center" 
                     VerticalAlignment="Top" 
-                    Margin="0,10,0,0"
+                    Margin="0,15,0,0"
                     Opacity="0" 
                     Visibility="Collapsed"
                     Panel.ZIndex="1000">
-                <TextBlock x:Name="CopyConfirmationText" 
-                           Foreground="{StaticResource WindowBackgroundBrush}" 
-                           FontSize="12" 
-                           FontWeight="Bold"
-                           Text="Copied to clipboard!"/>
+                <Border.RenderTransform>
+                    <ScaleTransform ScaleX="1" ScaleY="1"/>
+                </Border.RenderTransform>
+                <Border.Effect>
+                    <DropShadowEffect Color="#FF000000" Direction="270" ShadowDepth="3" BlurRadius="8" Opacity="0.3"/>
+                </Border.Effect>
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="✓" 
+                               Foreground="{StaticResource WindowBackgroundBrush}" 
+                               FontSize="14" 
+                               FontWeight="Bold"
+                               VerticalAlignment="Center"
+                               Margin="0,0,8,0"/>
+                    <TextBlock x:Name="CopyConfirmationText" 
+                               Foreground="{StaticResource WindowBackgroundBrush}" 
+                               FontSize="13" 
+                               FontWeight="SemiBold"
+                               Text="Copied to clipboard!"
+                               VerticalAlignment="Center"/>
+                </StackPanel>
             </Border>
         </Grid>
     </Border>

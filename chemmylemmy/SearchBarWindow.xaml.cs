@@ -8,6 +8,8 @@ using Clipboard = System.Windows.Clipboard;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using System.Windows.Threading;
 using System.Windows.Media.Animation;
+using System.Windows.Media;
+using System.Windows.Media.Effects;
 using System.Net.Http;
 using System.Collections.Generic; // Added for List<string>
 using System.Windows.Media.Imaging;
@@ -200,78 +202,128 @@ namespace chemmylemmy
                     string copiedValue = lastMolarMass.Value.ToString(format);
                     Clipboard.SetText(copiedValue);
                     
-                    // Show debug confirmation window if enabled
-                    if (settings.ShowCopyConfirmation)
-                    {
-                        ShowDebugConfirmation(copiedValue, isPubChemResult);
-                    }
-                    
                     // Store current text before closing
                     previousText = SearchTextBox.Text;
+                    
+                    // Show notification in a separate overlay window
+                    ShowNotificationOverlay(copiedValue, isPubChemResult);
+                    
+                    // Close immediately
                     Close();
                 }
             }
         }
 
-        private void ShowDebugConfirmation(string copiedValue, bool isPubChem = false)
+        private void ShowNotificationOverlay(string copiedValue, bool isPubChem = false)
         {
-            string title = isPubChem ? "PubChem - Copied!" : "Debug - Copied!";
             string text = isPubChem ? $"Copied: {copiedValue} g/mol (PubChem)" : $"Copied: {copiedValue} g/mol";
             
-            var debugWindow = new Window
+            // Create notification window
+            var notificationWindow = new Window
             {
-                Title = title,
-                Width = 200,
-                Height = 60,
+                Title = "Copy Notification",
+                SizeToContent = SizeToContent.WidthAndHeight,
                 WindowStyle = WindowStyle.None,
                 ResizeMode = ResizeMode.NoResize,
                 ShowInTaskbar = false,
                 WindowStartupLocation = WindowStartupLocation.CenterScreen,
                 Background = System.Windows.Media.Brushes.Transparent,
                 AllowsTransparency = true,
-                Content = new Border
-                {
-                    CornerRadius = new CornerRadius(10),
-                    Padding = new Thickness(15),
-                    Background = System.Windows.Media.Brushes.DarkGray,
-                    BorderBrush = System.Windows.Media.Brushes.Gray,
-                    BorderThickness = new Thickness(1),
-                    Child = new TextBlock
-                    {
-                        Text = text,
-                        FontSize = 12,
-                        FontWeight = FontWeights.Bold,
-                        Foreground = System.Windows.Media.Brushes.White,
-                        HorizontalAlignment = System.Windows.HorizontalAlignment.Center,
-                        VerticalAlignment = System.Windows.VerticalAlignment.Center,
-                        TextAlignment = TextAlignment.Center
-                    }
-                }
+                Topmost = true,
+                Opacity = 1
             };
             
-            debugWindow.Show();
+            // Add ScaleTransform for animations
+            notificationWindow.RenderTransform = new ScaleTransform(1, 1);
+            notificationWindow.RenderTransformOrigin = new System.Windows.Point(0.5, 0.5); // Scale from center
             
-            // Create fade-out animation
+            // Create the notification content with Monokai styling
+            var border = new Border
+            {
+                CornerRadius = new CornerRadius(5),
+                Padding = new Thickness(12, 8, 12, 8),
+                Background = SafeBrushFromString(settings.NotificationBackgroundColor, "#FF57584F"),
+                BorderBrush = SafeBrushFromString(settings.NotificationBorderColor, "#FFFFFFFF"),
+                BorderThickness = new Thickness(1)
+            };
+            
+            // Create content with checkmark and text
+            var stackPanel = new StackPanel
+            {
+                Orientation = System.Windows.Controls.Orientation.Horizontal
+            };
+            
+            var checkmark = new TextBlock
+            {
+                Text = "✓",
+                FontSize = 14,
+                FontWeight = FontWeights.Bold,
+                Foreground = SafeBrushFromString(settings.NotificationTextColor, "#FFF8F8F2"),
+                VerticalAlignment = VerticalAlignment.Center,
+                Margin = new Thickness(0, 0, 8, 0)
+            };
+            
+            var textBlock = new TextBlock
+            {
+                Text = text,
+                FontSize = 13,
+                FontWeight = FontWeights.SemiBold,
+                Foreground = SafeBrushFromString(settings.NotificationTextColor, "#FFF8F8F2"),
+                VerticalAlignment = VerticalAlignment.Center
+            };
+            
+            stackPanel.Children.Add(checkmark);
+            stackPanel.Children.Add(textBlock);
+            border.Child = stackPanel;
+            notificationWindow.Content = border;
+            
+            // Show the window
+            notificationWindow.Show();
+            
+            // Create animations
             var fadeOut = new DoubleAnimation
             {
                 From = 1,
                 To = 0,
-                Duration = TimeSpan.FromMilliseconds(300),
-                BeginTime = TimeSpan.FromMilliseconds(500) // Start fade-out after 0.5 seconds
+                Duration = TimeSpan.FromMilliseconds(150),
+                BeginTime = TimeSpan.FromMilliseconds(600)
+            };
+            
+            var scaleOut = new DoubleAnimation
+            {
+                From = 1.0,
+                To = 0.9,
+                Duration = TimeSpan.FromMilliseconds(150),
+                BeginTime = TimeSpan.FromMilliseconds(600)
             };
             
             // Create storyboard
             var storyboard = new Storyboard();
             storyboard.Children.Add(fadeOut);
+            storyboard.Children.Add(scaleOut);
             
-            // Set target
-            Storyboard.SetTarget(fadeOut, debugWindow);
+            // Set targets
+            Storyboard.SetTarget(fadeOut, notificationWindow);
             Storyboard.SetTargetProperty(fadeOut, new PropertyPath(OpacityProperty));
+            
+            Storyboard.SetTarget(scaleOut, notificationWindow);
+            Storyboard.SetTargetProperty(scaleOut, new PropertyPath("RenderTransform.ScaleX"));
+            
+            var scaleOutY = new DoubleAnimation
+            {
+                From = 1.0,
+                To = 0.9,
+                Duration = TimeSpan.FromMilliseconds(150),
+                BeginTime = TimeSpan.FromMilliseconds(600)
+            };
+            Storyboard.SetTarget(scaleOutY, notificationWindow);
+            Storyboard.SetTargetProperty(scaleOutY, new PropertyPath("RenderTransform.ScaleY"));
+            storyboard.Children.Add(scaleOutY);
             
             // Handle completion
             storyboard.Completed += (s, e) =>
             {
-                debugWindow.Close();
+                notificationWindow.Close();
             };
             
             // Start animation

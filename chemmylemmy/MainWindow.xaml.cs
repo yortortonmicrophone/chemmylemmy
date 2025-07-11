@@ -129,5 +129,27 @@ namespace chemmylemmy
             settingsWindow.WindowStartupLocation = WindowStartupLocation.CenterScreen;
             settingsWindow.Show();
         }
+
+        public void ApplySettings()
+        {
+            // Reload settings
+            settings = Settings.Load();
+            
+            // Update hotkey
+            RegisterHotkey();
+            
+            // Update system tray tooltip
+            if (notifyIcon != null)
+            {
+                notifyIcon.Text = $"ChemmyLemmy - Press {settings.GetHotkeyDisplayString()} to search";
+                
+                // Update context menu
+                var contextMenu = notifyIcon.ContextMenuStrip;
+                if (contextMenu.Items.Count > 0)
+                {
+                    contextMenu.Items[0].Text = $"Show Search ({settings.GetHotkeyDisplayString()})";
+                }
+            }
+        }
     }
 }
