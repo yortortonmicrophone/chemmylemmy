@@ -39,12 +39,25 @@
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        
-                        <TextBlock x:Name="ResultsTextBlock" Foreground="{StaticResource TextBrush}" FontSize="12" Text="Results will appear here..."
-                                   Padding="8,6,8,6" Margin="0" TextWrapping="Wrap" VerticalAlignment="Top" Grid.Column="0"/>
-                        
-                        <Image x:Name="StructureImage" Grid.Column="1" Width="150" Height="150" Margin="8,6,8,6" 
-                               Stretch="Uniform" Visibility="Collapsed"/>
+                        <TextBlock x:Name="ResultsTextBlock" Grid.Column="0" Foreground="{StaticResource TextBrush}" FontSize="12" Text="Results will appear here..."
+                                   Padding="8,6,8,6" Margin="0" TextWrapping="Wrap" VerticalAlignment="Top"/>
+                        <!-- Rounded corners for image, robust clipping, using OpacityMask for the image. Only visible when image is shown. -->
+                        <Border Grid.Column="1" CornerRadius="4" ClipToBounds="True" Margin="8,6,8,6" Width="150" Height="150" VerticalAlignment="Top" HorizontalAlignment="Center" Visibility="{Binding ElementName=StructureImage, Path=Visibility}">
+                            <Image x:Name="StructureImage"
+                                   Stretch="UniformToFill"
+                                   Visibility="Collapsed"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   Opacity="1.0">
+                                <Image.OpacityMask>
+                                    <VisualBrush>
+                                        <VisualBrush.Visual>
+                                            <Rectangle Width="150" Height="150" RadiusX="4" RadiusY="4" Fill="Black"/>
+                                        </VisualBrush.Visual>
+                                    </VisualBrush>
+                                </Image.OpacityMask>
+                            </Image>
+                        </Border>
                     </Grid>
                 </Border>
             </StackPanel>
