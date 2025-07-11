@@ -328,6 +328,16 @@ namespace chemmylemmy
             // Default behavior: try local parsing first, then PubChem
             var localResult = SmartFormulaParser.ParseFormula(query);
             
+            // Debug: Show parsing result for "ohge"
+            if (query.ToLower() == "ohge")
+            {
+                var debugInfo = SmartFormulaParser.DebugParseResult(query);
+                ResultsTextBlock.Text = $"Debug for '{query}': {debugInfo}";
+                return;
+            }
+            
+
+            
             if (localResult.Success)
             {
                 // Local parsing worked - show result immediately

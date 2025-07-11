@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace chemmylemmy
 {
@@ -15,6 +16,85 @@ namespace chemmylemmy
             public string ParsedFormula { get; set; } // Shows how the formula was interpreted
         }
 
+        // Debug method to show parsing steps
+        public static string DebugParseResult(string input)
+        {
+            var result = new StringBuilder();
+            result.AppendLine($"Input: {input}");
+            result.AppendLine($"Input length: {input.Length}");
+            result.AppendLine($"Characters: {string.Join(", ", input.Select(c => $"'{c}'"))}");
+            
+            // Check if basic elements exist
+            result.AppendLine($"\nElement checks:");
+            result.AppendLine($"'O' exists: {ChemicalElementData.Elements.ContainsKey("O")}");
+            result.AppendLine($"'H' exists: {ChemicalElementData.Elements.ContainsKey("H")}");
+            result.AppendLine($"'G' exists: {ChemicalElementData.Elements.ContainsKey("G")}");
+            result.AppendLine($"'E' exists: {ChemicalElementData.Elements.ContainsKey("E")}");
+            result.AppendLine($"'Ge' exists: {ChemicalElementData.Elements.ContainsKey("Ge")}");
+            
+            // Test each parsing method
+            if (TryExactMatch(input, out var exactTokens))
+            {
+                result.AppendLine($"Exact match: {string.Join(", ", exactTokens.Select(t => t.Value))}");
+            }
+            else
+            {
+                result.AppendLine("Exact match: FAILED");
+            }
+            
+            if (TrySectionBasedParsing(input, out var sectionTokens))
+            {
+                result.AppendLine($"Section parsing: {string.Join(", ", sectionTokens.Select(t => t.Value))}");
+            }
+            else
+            {
+                result.AppendLine("Section parsing: FAILED");
+            }
+            
+            if (TryAllCombinations(input, out var combinationTokens))
+            {
+                result.AppendLine($"Combination parsing: {string.Join(", ", combinationTokens.Select(t => t.Value))}");
+            }
+            else
+            {
+                result.AppendLine("Combination parsing: FAILED");
+            }
+            
+            // Test individual components
+            result.AppendLine("\nTesting individual components:");
+            
+            // Test TryParseAllSingleLetters
+            if (TryParseAllSingleLetters(input, out var singleLetterTokens))
+            {
+                result.AppendLine($"Single letter parsing: {string.Join(", ", singleLetterTokens.Select(t => t.Value))}");
+            }
+            else
+            {
+                result.AppendLine("Single letter parsing: FAILED");
+            }
+            
+            // Test TryParseWithFallbackCapitalization
+            if (TryParseWithFallbackCapitalization(input, out var fallbackTokens))
+            {
+                result.AppendLine($"Fallback parsing: {string.Join(", ", fallbackTokens.Select(t => t.Value))}");
+            }
+            else
+            {
+                result.AppendLine("Fallback parsing: FAILED");
+            }
+            
+            // Test the actual ParseFormula method
+            var parseResult = ParseFormula(input);
+            result.AppendLine($"\nFinal result: Success={parseResult.Success}, Error={parseResult.Error}");
+            if (parseResult.Success)
+            {
+                result.AppendLine($"Parsed formula: {parseResult.ParsedFormula}");
+                result.AppendLine($"Molar mass: {parseResult.MolarMass}");
+            }
+            
+            return result.ToString();
+        }
+        
         // Main parsing method that implements section-based parsing
         public static ParseResult ParseFormula(string input)
         {
@@ -25,6 +105,13 @@ namespace chemmylemmy
             {
                 result.Success = true;
                 result.ParsedFormula = "Exact match";
+                // Failsafe check
+                if (!LetterCountsMatch(input, exactTokens))
+                {
+                    result.Success = false;
+                    result.Error = "Letter count mismatch between input and parsed result (failsafe).";
+                    return result;
+                }
                 return CalculateMolarMass(exactTokens, result);
             }
 
@@ -33,6 +120,13 @@ namespace chemmylemmy
             {
                 result.Success = true;
                 result.ParsedFormula = "Section-based parsing";
+                // Failsafe check
+                if (!LetterCountsMatch(input, sectionTokens))
+                {
+                    result.Success = false;
+                    result.Error = "Letter count mismatch between input and parsed result (failsafe).";
+                    return result;
+                }
                 return CalculateMolarMass(sectionTokens, result);
             }
 
@@ -41,6 +135,13 @@ namespace chemmylemmy
             {
                 result.Success = true;
                 result.ParsedFormula = "Fallback combinations";
+                // Failsafe check
+                if (!LetterCountsMatch(input, combinationTokens))
+                {
+                    result.Success = false;
+                    result.Error = "Letter count mismatch between input and parsed result (failsafe).";
+                    return result;
+                }
                 return CalculateMolarMass(combinationTokens, result);
             }
 
@@ -48,6 +149,44 @@ namespace chemmylemmy
             result.Error = "Could not parse formula using any method";
             return result;
         }
+
+        // Failsafe: check if letter counts match between input and parsed tokens
+        private static bool LetterCountsMatch(string input, List<Token> tokens)
+        {
+            var inputCounts = new Dictionary<char, int>();
+            foreach (var c in input.ToLower())
+            {
+                if (char.IsLetter(c))
+                {
+                    if (!inputCounts.ContainsKey(c)) inputCounts[c] = 0;
+                    inputCounts[c]++;
+                }
+            }
+
+            var parsedCounts = new Dictionary<char, int>();
+            foreach (var token in tokens)
+            {
+                if (token.Type == TokenType.Element)
+                {
+                    foreach (var c in token.Value.ToLower())
+                    {
+                        if (!parsedCounts.ContainsKey(c)) parsedCounts[c] = 0;
+                        parsedCounts[c]++;
+                    }
+                }
+            }
+
+            // Compare counts
+            if (inputCounts.Count != parsedCounts.Count) return false;
+            foreach (var kvp in inputCounts)
+            {
+                if (!parsedCounts.ContainsKey(kvp.Key) || parsedCounts[kvp.Key] != kvp.Value)
+                    return false;
+            }
+            return true;
+        }
+        
+
 
         // Step 1: Exact match (case-sensitive)
         private static bool TryExactMatch(string input, out List<Token> tokens)
@@ -186,47 +325,169 @@ namespace chemmylemmy
             
             string section = input.Substring(start, end - start);
             
-            // Try different parsing strategies for this section
-            var strategies = new List<List<Token>>();
-            
-            // Strategy 1: Exact match
-            if (TryParseSectionExact(section, out var exactTokens))
-                strategies.Add(exactTokens);
-            
-            // Strategy 2: Two-letter first
-            if (TryParseSectionTwoLetterFirst(section, out var twoLetterTokens))
-                strategies.Add(twoLetterTokens);
-            
-            // Strategy 3: Single letter first
-            if (TryParseSectionSingleLetterFirst(section, out var singleLetterTokens))
-                strategies.Add(singleLetterTokens);
-            
-            if (strategies.Count == 0)
-                return null;
-            
-            // Choose the best strategy (prefer exact match, then single letter first for most cases)
-            var bestStrategy = strategies[0];
-            if (strategies.Count > 1)
+            // Strategy 1: Always try single letter elements first
+            if (TryParseAllSingleLetters(section, out var singleLetterTokens))
             {
-                // Prefer exact match over others
-                if (strategies.Any(s => s.Count == 1 && s[0].Value == section))
+                // Check if we can improve this by looking for capitalization patterns
+                var improvedTokens = TryImproveWithCapitalization(section, singleLetterTokens);
+                i = end;
+                return improvedTokens;
+            }
+            
+            // Strategy 1.5: If single letter parsing failed, try to fix it with capitalization patterns
+            if (TryParseWithFallbackCapitalization(section, out var fallbackTokens))
+            {
+                i = end;
+                return fallbackTokens;
+            }
+            
+            // Strategy 2: Try exact match
+            if (TryParseSectionExact(section, out var exactTokens))
+            {
+                i = end;
+                return exactTokens;
+            }
+            
+            // Strategy 3: Two-letter first
+            if (TryParseSectionTwoLetterFirst(section, out var twoLetterTokens))
+            {
+                i = end;
+                return twoLetterTokens;
+            }
+            
+            // Strategy 4: Single letter first (original logic)
+            if (TryParseSectionSingleLetterFirst(section, out var singleLetterFirstTokens))
+            {
+                i = end;
+                return singleLetterFirstTokens;
+            }
+            
+            return null;
+        }
+        
+        // Try to parse using only single letter elements
+        private static bool TryParseAllSingleLetters(string section, out List<Token> tokens)
+        {
+            tokens = new List<Token>();
+            int i = 0;
+            
+            while (i < section.Length)
+            {
+                string singleLetter = char.ToUpper(section[i]).ToString();
+                if (ChemicalElementData.Elements.ContainsKey(singleLetter))
                 {
-                    bestStrategy = strategies.First(s => s.Count == 1 && s[0].Value == section);
+                    tokens.Add(new Token(TokenType.Element, singleLetter));
+                    i++;
+                }
+                else if (i + 1 < section.Length)
+                {
+                    // If single letter is invalid, check if the next two letters form a valid two-letter element
+                    string twoLetter = char.ToUpper(section[i]).ToString() + char.ToLower(section[i + 1]).ToString();
+                    if (ChemicalElementData.Elements.ContainsKey(twoLetter))
+                    {
+                        tokens.Add(new Token(TokenType.Element, twoLetter));
+                        i += 2;
+                        continue;
+                    }
+                    // If that didn't work, try fallback capitalization from this point
+                    var fallbackTokens = new List<Token>(tokens);
+                    if (TryParseWithFallbackCapitalization(section.Substring(i), out var remainingTokens))
+                    {
+                        fallbackTokens.AddRange(remainingTokens);
+                        tokens = fallbackTokens;
+                        return true;
+                    }
+                    return false;
                 }
                 else
                 {
-                    // For mixed cases, prefer single letter first (like the original logic)
-                    // Only use two-letter first if single letter approach fails
-                    var singleLetterStrategy = strategies.FirstOrDefault(s => s.Count > 1 && s.Any(t => t.Value.Length == 1));
-                    if (singleLetterStrategy != null)
+                    // If that didn't work, try fallback capitalization from this point
+                    var fallbackTokens = new List<Token>(tokens);
+                    if (TryParseWithFallbackCapitalization(section.Substring(i), out var remainingTokens))
                     {
-                        bestStrategy = singleLetterStrategy;
+                        fallbackTokens.AddRange(remainingTokens);
+                        tokens = fallbackTokens;
+                        return true;
                     }
+                    return false;
                 }
             }
             
-            i = end;
-            return bestStrategy;
+            return true;
+        }
+        
+        // Try to improve single letter parsing by looking for capitalization patterns
+        private static List<Token> TryImproveWithCapitalization(string section, List<Token> originalTokens)
+        {
+            var improvedTokens = new List<Token>();
+            int tokenIndex = 0;
+            int charIndex = 0;
+            
+            while (tokenIndex < originalTokens.Count)
+            {
+                var currentToken = originalTokens[tokenIndex];
+                
+                // If this is a single letter and it's capitalized in the original input
+                if (currentToken.Value.Length == 1 && charIndex < section.Length && char.IsUpper(section[charIndex]))
+                {
+                    // Check if the next character is lowercase and they form a valid two-letter element
+                    if (charIndex + 1 < section.Length && char.IsLower(section[charIndex + 1]))
+                    {
+                        string twoLetter = char.ToUpper(section[charIndex]).ToString() + char.ToLower(section[charIndex + 1]).ToString();
+                        if (ChemicalElementData.Elements.ContainsKey(twoLetter))
+                        {
+                            improvedTokens.Add(new Token(TokenType.Element, twoLetter));
+                            charIndex += 2;
+                            tokenIndex += 2; // Skip the next single letter token too
+                            continue;
+                        }
+                    }
+                }
+                
+                // Otherwise, keep the original token
+                improvedTokens.Add(currentToken);
+                charIndex += currentToken.Value.Length;
+                tokenIndex++;
+            }
+            
+            return improvedTokens;
+        }
+        
+        // Try to parse with fallback capitalization when single letter parsing fails
+        private static bool TryParseWithFallbackCapitalization(string section, out List<Token> tokens)
+        {
+            tokens = new List<Token>();
+            int i = 0;
+            
+            while (i < section.Length)
+            {
+                // Try single letter first
+                string singleLetter = char.ToUpper(section[i]).ToString();
+                if (ChemicalElementData.Elements.ContainsKey(singleLetter))
+                {
+                    tokens.Add(new Token(TokenType.Element, singleLetter));
+                    i++;
+                    continue;
+                }
+                
+                // If single letter failed, check if this character is capitalized
+                // and the next character is lowercase, forming a valid two-letter element
+                if (char.IsUpper(section[i]) && i + 1 < section.Length && char.IsLower(section[i + 1]))
+                {
+                    string twoLetter = char.ToUpper(section[i]).ToString() + char.ToLower(section[i + 1]).ToString();
+                    if (ChemicalElementData.Elements.ContainsKey(twoLetter))
+                    {
+                        tokens.Add(new Token(TokenType.Element, twoLetter));
+                        i += 2;
+                        continue;
+                    }
+                }
+                
+                // If we get here, we can't parse this character
+                return false;
+            }
+            
+            return true;
         }
         
         // Try to parse a section using exact match
@@ -289,41 +550,31 @@ namespace chemmylemmy
         {
             tokens = new List<Token>();
             int i = 0;
-            
             while (i < section.Length)
             {
+                // Try single letter
                 string singleLetter = char.ToUpper(section[i]).ToString();
                 if (ChemicalElementData.Elements.ContainsKey(singleLetter))
                 {
-                    tokens.Add(new Token(TokenType.Element, singleLetter));
-                    i++;
-                    continue;
-                }
-                
-                if (i + 1 < section.Length)
-                {
-                    string twoLetter = section.Substring(i, 2);
-                    if (ChemicalElementData.Elements.ContainsKey(twoLetter))
+                    // Check if the next two letters form a valid element
+                    if (i + 2 <= section.Length)
                     {
-                        tokens.Add(new Token(TokenType.Element, twoLetter));
-                        i += 2;
-                        continue;
-                    }
-                    else
-                    {
-                        string properCase = char.ToUpper(twoLetter[0]).ToString() + char.ToLower(twoLetter[1]).ToString();
-                        if (ChemicalElementData.Elements.ContainsKey(properCase))
+                        string twoLetter = char.ToUpper(section[i]).ToString() + char.ToLower(section[i + 1]).ToString();
+                        if (ChemicalElementData.Elements.ContainsKey(twoLetter))
                         {
-                            tokens.Add(new Token(TokenType.Element, properCase));
+                            tokens.Add(new Token(TokenType.Element, twoLetter));
                             i += 2;
                             continue;
                         }
                     }
+                    // Otherwise, just use the single letter
+                    tokens.Add(new Token(TokenType.Element, singleLetter));
+                    i++;
+                    continue;
                 }
-                
+                // If not a valid single letter, fail
                 return false;
             }
-            
             return true;
         }
 
