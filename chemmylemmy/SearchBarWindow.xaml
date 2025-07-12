@@ -21,25 +21,25 @@
         </Style>
     </Window.Resources>
     <!-- No local resources needed; all brushes/colors are now in App.xaml -->
-    <Border x:Name="MainBorder" CornerRadius="10" Padding="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource WindowBackgroundBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1">
+    <Border x:Name="MainBorder" CornerRadius="10" Padding="8" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{DynamicResource WindowBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1">
 
         <Grid>
             <StackPanel>
-                <Border x:Name="SearchBoxBorder" CornerRadius="5" Background="{StaticResource SearchBoxBackgroundBrush}" Margin="0,0,0,6" BorderBrush="{StaticResource AccentBrush}" BorderThickness="1">
+                <Border x:Name="SearchBoxBorder" CornerRadius="5" Background="{DynamicResource SearchBoxBackgroundBrush}" Margin="0,0,0,6" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1">
                     <TextBox x:Name="SearchTextBox" Height="26" FontSize="13" VerticalContentAlignment="Center"
                              Style="{StaticResource RoundedTextBoxStyle}"
-                             Background="Transparent" Foreground="{StaticResource TextBrush}" BorderThickness="0" Padding="6,0"
-                             CaretBrush="{StaticResource AccentBrush}" SelectionBrush="{StaticResource HighlightBrush}"
+                             Background="Transparent" Foreground="{DynamicResource TextBrush}" BorderThickness="0" Padding="6,0"
+                             CaretBrush="{DynamicResource AccentBrush}" SelectionBrush="{DynamicResource HighlightBrush}"
                              TextChanged="SearchTextBox_TextChanged" KeyDown="SearchTextBox_KeyDown"/>
                 </Border>
                 
-                <Border x:Name="ResultsBoxBorder" CornerRadius="5" Background="{StaticResource ResultsBoxBackgroundBrush}" BorderBrush="{StaticResource BorderBrush}" BorderThickness="1" Margin="0">
+                <Border x:Name="ResultsBoxBorder" CornerRadius="5" Background="{DynamicResource ResultsBoxBackgroundBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" Margin="0">
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <TextBlock x:Name="ResultsTextBlock" Grid.Column="0" Foreground="{StaticResource TextBrush}" FontSize="12" Text="Results will appear here..."
+                        <TextBlock x:Name="ResultsTextBlock" Grid.Column="0" Foreground="{DynamicResource TextBrush}" FontSize="12" Text="Results will appear here..."
                                    Padding="8,6,8,6" Margin="0" TextWrapping="Wrap" VerticalAlignment="Top"/>
                         <!-- Rounded corners for image, robust clipping, using OpacityMask for the image. Only visible when image is shown. -->
                         <Border Grid.Column="1" CornerRadius="4" ClipToBounds="True" Margin="8,6,8,6" Width="150" Height="150" VerticalAlignment="Top" HorizontalAlignment="Center" Visibility="{Binding ElementName=StructureImage, Path=Visibility}">
@@ -64,7 +64,7 @@
             
             <!-- Copy Confirmation Overlay -->
             <Border x:Name="CopyConfirmationOverlay" 
-                    Background="{StaticResource HighlightBrush}" 
+                    Background="{DynamicResource HighlightBrush}" 
                     CornerRadius="8" 
                     Padding="16,10" 
                     HorizontalAlignment="Center" 
@@ -77,17 +77,17 @@
                     <ScaleTransform ScaleX="1" ScaleY="1"/>
                 </Border.RenderTransform>
                 <Border.Effect>
-                    <DropShadowEffect Color="{StaticResource MonokaiBorder}" Direction="270" ShadowDepth="3" BlurRadius="8" Opacity="0.3"/>
+                    <DropShadowEffect Color="{DynamicResource MonokaiBorder}" Direction="270" ShadowDepth="3" BlurRadius="8" Opacity="0.3"/>
                 </Border.Effect>
                 <StackPanel Orientation="Horizontal">
                     <TextBlock Text="✓" 
-                               Foreground="{StaticResource WindowBackgroundBrush}" 
+                               Foreground="{DynamicResource WindowBackgroundBrush}" 
                                FontSize="14" 
                                FontWeight="Bold"
                                VerticalAlignment="Center"
                                Margin="0,0,8,0"/>
                     <TextBlock x:Name="CopyConfirmationText" 
-                               Foreground="{StaticResource WindowBackgroundBrush}" 
+                               Foreground="{DynamicResource WindowBackgroundBrush}" 
                                FontSize="13" 
                                FontWeight="SemiBold"
                                Text="Copied to clipboard!"

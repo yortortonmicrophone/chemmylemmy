@@ -330,7 +330,7 @@ namespace chemmylemmy
             ResultsBoxBackgroundColorTextBox.Text = "#FF2E3440";
             WindowBorderColorTextBox.Text = "#FF4C566A";
             WindowBackgroundColorTextBox.Text = "#FF2E3440";
-            HighlightColorTextBox.Text = "#FFA3BE8C";
+            HighlightColorTextBox.Text = "#FF88C0D0";
             NotificationBackgroundColorTextBox.Text = "#FF3B4252";
             NotificationBorderColorTextBox.Text = "#FF4C566A";
             NotificationTextColorTextBox.Text = "#FFECEFF4";
@@ -339,21 +339,21 @@ namespace chemmylemmy
             ApplyThemeColors();
         }
 
-        private void GruvboxTheme_Click(object sender, RoutedEventArgs e)
+        private void LightTheme_Click(object sender, RoutedEventArgs e)
         {
-            // Gruvbox theme colors
-            SearchBoxBorderColorTextBox.Text = "#FF504945";
-            SearchBoxTextColorTextBox.Text = "#FFEBDBB2";
-            SearchBoxBackgroundColorTextBox.Text = "#FF3C3836";
-            ResultsBoxBorderColorTextBox.Text = "#FF504945";
-            ResultsBoxTextColorTextBox.Text = "#FFEBDBB2";
-            ResultsBoxBackgroundColorTextBox.Text = "#FF282828";
-            WindowBorderColorTextBox.Text = "#FF504945";
-            WindowBackgroundColorTextBox.Text = "#FF282828";
-            HighlightColorTextBox.Text = "#FFB8BB26";
-            NotificationBackgroundColorTextBox.Text = "#FF3C3836";
-            NotificationBorderColorTextBox.Text = "#FF504945";
-            NotificationTextColorTextBox.Text = "#FFEBDBB2";
+            // Light theme colors
+            SearchBoxBorderColorTextBox.Text = "#FFCCCCCC";
+            SearchBoxTextColorTextBox.Text = "#FF2D2D2D";
+            SearchBoxBackgroundColorTextBox.Text = "#FFF5F5F5";
+            ResultsBoxBorderColorTextBox.Text = "#FFCCCCCC";
+            ResultsBoxTextColorTextBox.Text = "#FF2D2D2D";
+            ResultsBoxBackgroundColorTextBox.Text = "#FFFFFFFF";
+            WindowBorderColorTextBox.Text = "#FFCCCCCC";
+            WindowBackgroundColorTextBox.Text = "#FFF8F8F8";
+            HighlightColorTextBox.Text = "#FF007ACC";
+            NotificationBackgroundColorTextBox.Text = "#FFF5F5F5";
+            NotificationBorderColorTextBox.Text = "#FFCCCCCC";
+            NotificationTextColorTextBox.Text = "#FF2D2D2D";
             
             // Apply the new theme colors to the settings window
             ApplyThemeColors();
@@ -432,9 +432,6 @@ namespace chemmylemmy
             
             // Apply the new theme colors to the settings window
             Dispatcher.Invoke(new Action(() => ApplyThemeColors()), System.Windows.Threading.DispatcherPriority.Loaded);
-            
-            // Show success message
-            System.Windows.MessageBox.Show("Settings saved successfully!", "Settings Saved", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
@@ -577,12 +574,7 @@ namespace chemmylemmy
                 ResetButton.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
             }
             
-            if (CancelButton != null)
-            {
-                CancelButton.Background = System.Windows.Media.Brushes.Transparent;
-                CancelButton.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
-                CancelButton.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
-            }
+
         }
 
         private void ForceRenderAllTabsAndApplyColors(Settings currentSettings)

@@ -111,21 +111,21 @@ namespace chemmylemmy
             NotificationTextColor = "#FFECEFF4"
         };
 
-        public static readonly ColorPreset GruvboxDarkTheme = new ColorPreset
+        public static readonly ColorPreset LightTheme = new ColorPreset
         {
-            Name = "Gruvbox Dark",
-            SearchBoxBorderColor = "#FF928374",
-            SearchBoxTextColor = "#FFEBDBB2",
-            SearchBoxBackgroundColor = "#FF504945",
-            ResultsBoxBorderColor = "#FF928374",
-            ResultsBoxTextColor = "#FFEBDBB2",
-            ResultsBoxBackgroundColor = "#FF3C3836",
-            WindowBorderColor = "#FF928374",
-            WindowBackgroundColor = "#FF282828",
-            HighlightColor = "#FFFB4934",
-            NotificationBackgroundColor = "#FF504945",
-            NotificationBorderColor = "#FF928374",
-            NotificationTextColor = "#FFEBDBB2"
+            Name = "Light",
+            SearchBoxBorderColor = "#FFCCCCCC",
+            SearchBoxTextColor = "#FF2D2D2D",
+            SearchBoxBackgroundColor = "#FFF5F5F5",
+            ResultsBoxBorderColor = "#FFCCCCCC",
+            ResultsBoxTextColor = "#FF2D2D2D",
+            ResultsBoxBackgroundColor = "#FFFFFFFF",
+            WindowBorderColor = "#FFCCCCCC",
+            WindowBackgroundColor = "#FFF8F8F8",
+            HighlightColor = "#FF007ACC",
+            NotificationBackgroundColor = "#FFF5F5F5",
+            NotificationBorderColor = "#FFCCCCCC",
+            NotificationTextColor = "#FF2D2D2D"
         };
 
         public static Settings Load()

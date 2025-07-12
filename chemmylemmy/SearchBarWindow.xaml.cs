@@ -46,6 +46,11 @@ namespace chemmylemmy
             MainBorder.Background = SafeBrushFromString(settings.WindowBackgroundColor, "#FF272822");
             // Highlight color for selection
             SearchTextBox.SelectionBrush = SafeBrushFromString(settings.HighlightColor, "#FFA6E22E");
+            // Caret color (typing indicator)
+            SearchTextBox.CaretBrush = SafeBrushFromString(settings.SearchBoxTextColor, "#FFF8F8F2");
+            
+            // Update application-level brushes for dynamic resources
+            UpdateApplicationBrushes();
             
             debounceTimer = new DispatcherTimer();
             debounceTimer.Interval = TimeSpan.FromMilliseconds(DebounceMilliseconds);
@@ -566,6 +571,25 @@ namespace chemmylemmy
             catch
             {
                 return (System.Windows.Media.Brush)brushConverter.ConvertFromString(fallback);
+            }
+        }
+        
+        private void UpdateApplicationBrushes()
+        {
+            // Update application-level color resources for dynamic binding
+            var app = System.Windows.Application.Current;
+            if (app != null && app.Resources != null)
+            {
+                // Update the base colors that the brushes reference
+                app.Resources["MonokaiBackground"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(settings.WindowBackgroundColor);
+                app.Resources["MonokaiAccent"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(settings.SearchBoxBorderColor);
+                app.Resources["MonokaiBorder"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(settings.WindowBorderColor);
+                app.Resources["MonokaiText"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(settings.SearchBoxTextColor);
+                app.Resources["MonokaiHighlight"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(settings.HighlightColor);
+                
+                // Update the background brushes
+                app.Resources["SearchBoxBackgroundBrush"] = SafeBrushFromString(settings.SearchBoxBackgroundColor, "#FF57584F");
+                app.Resources["ResultsBoxBackgroundBrush"] = SafeBrushFromString(settings.ResultsBoxBackgroundColor, "#FF35362F");
             }
         }
     }

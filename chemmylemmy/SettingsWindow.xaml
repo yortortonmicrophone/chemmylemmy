@@ -9,8 +9,8 @@
         <ControlTemplate TargetType="Window">
             <Border Background="{TemplateBinding Background}" 
                     CornerRadius="8" 
-                    BorderBrush="{TemplateBinding BorderBrush}" 
-                    BorderThickness="{TemplateBinding BorderThickness}"
+                    BorderBrush="#FF666666" 
+                    BorderThickness="1"
                     ClipToBounds="True">
                 <ContentPresenter Margin="0,0,0,0"/>
             </Border>
@@ -154,9 +154,7 @@
                                         <TextBlock Grid.Column="0" Text="Decimal Places:" 
                                                    Foreground="{DynamicResource ThemeTextBrush}" VerticalAlignment="Center" Margin="0,0,12,0" FontSize="12"/>
                                         
-                                        <ComboBox Grid.Column="1" x:Name="DecimalPlacesComboBox" Height="30"
-                                                  Background="{DynamicResource ThemeBackgroundBrush}" Foreground="{DynamicResource ThemeTextBrush}"
-                                                  BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" FontSize="12">
+                                        <ComboBox Grid.Column="1" x:Name="DecimalPlacesComboBox" Style="{StaticResource ThemedComboBoxStyle}">
                                             <ComboBoxItem Content="2" IsSelected="True"/>
                                             <ComboBoxItem Content="3"/>
                                             <ComboBoxItem Content="4"/>
@@ -173,9 +171,7 @@
                                         <TextBlock Grid.Column="0" Text="Window Scale:" 
                                                    Foreground="{DynamicResource ThemeTextBrush}" VerticalAlignment="Center" Margin="0,0,12,0" FontSize="12"/>
                                         
-                                        <ComboBox Grid.Column="1" x:Name="ScaleComboBox" Height="30"
-                                                  Background="{DynamicResource ThemeBackgroundBrush}" Foreground="{DynamicResource ThemeTextBrush}"
-                                                  BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" FontSize="12">
+                                        <ComboBox Grid.Column="1" x:Name="ScaleComboBox" Style="{StaticResource ThemedComboBoxStyle}">
                                             <ComboBoxItem Content="100%" IsSelected="True"/>
                                             <ComboBoxItem Content="125%"/>
                                             <ComboBoxItem Content="150%"/>
@@ -220,9 +216,9 @@
                                         <Button Content="Nord" Width="90" Height="30" Margin="6,0"
                                                 Background="Transparent" Foreground="{DynamicResource ThemeTextBrush}"
                                                 BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" FontSize="11" Click="NordTheme_Click"/>
-                                        <Button Content="Gruvbox" Width="90" Height="30" Margin="6,0"
+                                        <Button Content="Light" Width="90" Height="30" Margin="6,0"
                                                 Background="Transparent" Foreground="{DynamicResource ThemeTextBrush}"
-                                                BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" FontSize="11" Click="GruvboxTheme_Click"/>
+                                                BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" FontSize="11" Click="LightTheme_Click"/>
                                     </StackPanel>
                                 </StackPanel>
                             </Border>
@@ -587,12 +583,9 @@
                 <Button x:Name="SaveButton" Content="Save" Width="90" Height="35" Margin="0,0,12,0"
                         Background="{DynamicResource ThemeBorderBrush}" Foreground="{DynamicResource ThemeTextBrush}"
                         BorderThickness="0" Click="Save_Click" FontSize="12"/>
-                <Button x:Name="ResetButton" Content="Reset Defaults" Width="110" Height="35" Margin="0,0,12,0"
+                <Button x:Name="ResetButton" Content="Reset Defaults" Width="110" Height="35"
                         Background="Transparent" Foreground="{DynamicResource ThemeTextBrush}"
                         BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Click="ResetDefaults_Click" FontSize="12"/>
-                <Button x:Name="CancelButton" Content="Cancel" Width="90" Height="35"
-                        Background="Transparent" Foreground="{DynamicResource ThemeTextBrush}"
-                        BorderBrush="{DynamicResource ThemeBorderBrush}" BorderThickness="1" Click="Cancel_Click" FontSize="12"/>
             </StackPanel>
         </Grid>
 </Window> 
