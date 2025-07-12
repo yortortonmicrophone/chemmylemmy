@@ -139,7 +139,7 @@ namespace chemmylemmy
                     return settings ?? new Settings();
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 // Handle loading errors silently
             }
@@ -160,7 +160,7 @@ namespace chemmylemmy
                 string json = JsonSerializer.Serialize(this, new JsonSerializerOptions { WriteIndented = true });
                 File.WriteAllText(SettingsFilePath, json);
             }
-            catch (Exception ex)
+            catch
             {
                 // Handle saving errors silently
             }

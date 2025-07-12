@@ -20,7 +20,6 @@ namespace chemmylemmy
         private bool isRecordingHotkey = false;
         private MainWindow mainWindow;
         private DispatcherTimer keyCheckTimer;
-        private bool isLoadingSettings = false;
 
         private void UpdateThemeResources()
         {
@@ -66,7 +65,7 @@ namespace chemmylemmy
 
 
 
-        private void KeyCheckTimer_Tick(object sender, EventArgs e)
+        private void KeyCheckTimer_Tick(object? sender, EventArgs e)
         {
             keyCheckTimer.Stop();
             
@@ -125,8 +124,6 @@ namespace chemmylemmy
 
         private void LoadSettings()
         {
-            isLoadingSettings = true;
-            
             // Load current settings
             HotkeyTextBox.Text = settings.GetHotkeyDisplayString();
             
@@ -196,8 +193,6 @@ namespace chemmylemmy
             Preset1NameTextBox.Text = settings.Preset1.Name;
             Preset2NameTextBox.Text = settings.Preset2.Name;
             Preset3NameTextBox.Text = settings.Preset3.Name;
-            
-            isLoadingSettings = false;
         }
 
         private void CloseButton_Click(object sender, RoutedEventArgs e)
@@ -698,7 +693,7 @@ namespace chemmylemmy
             }
         }
 
-        private T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        private T? FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
         {
             for (int i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent); i++)
             {

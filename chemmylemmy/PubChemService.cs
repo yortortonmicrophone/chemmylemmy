@@ -79,9 +79,9 @@ namespace chemmylemmy
                 result.Compound = compound;
                 return result;
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
-                result.Error = $"Network error: {ex.Message}";
+                result.Error = "Network error occurred";
                 return result;
             }
             catch (TaskCanceledException)
@@ -89,9 +89,9 @@ namespace chemmylemmy
                 result.Error = "Request timed out";
                 return result;
             }
-            catch (Exception ex)
+            catch
             {
-                result.Error = $"Unexpected error: {ex.Message}";
+                result.Error = "Unexpected error occurred";
                 return result;
             }
         }
@@ -106,15 +106,15 @@ namespace chemmylemmy
                 var response = await client.GetStringAsync("https://httpbin.org/get");
                 return true;
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
                 return false;
             }
-            catch (TaskCanceledException ex)
+            catch (TaskCanceledException)
             {
                 return false;
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
@@ -130,15 +130,15 @@ namespace chemmylemmy
                 var response = await httpClient.GetStringAsync(testUrl);
                 return true;
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
                 return false;
             }
-            catch (TaskCanceledException ex)
+            catch (TaskCanceledException)
             {
                 return false;
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }
@@ -187,11 +187,11 @@ namespace chemmylemmy
                         }
                     }
                 }
-                catch (HttpRequestException ex)
+                catch (HttpRequestException)
                 {
                     continue;
                 }
-                catch (Exception ex)
+                catch
                 {
                     continue;
                 }
@@ -242,15 +242,15 @@ namespace chemmylemmy
                     }
                 }
             }
-            catch (HttpRequestException ex)
+            catch (HttpRequestException)
             {
                 // Handle HTTP errors silently
             }
-            catch (JsonException ex)
+            catch (JsonException)
             {
                 // Handle JSON parsing errors silently
             }
-            catch (Exception ex)
+            catch
             {
                 // Handle other errors silently
             }
@@ -311,7 +311,7 @@ namespace chemmylemmy
                     }
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 // Handle errors silently
             }

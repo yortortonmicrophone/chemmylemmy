@@ -83,7 +83,7 @@ namespace chemmylemmy
             ApplyWindowScaling();
         }
 
-        private void SearchBarWindow_Activated(object sender, EventArgs e)
+        private void SearchBarWindow_Activated(object? sender, EventArgs e)
         {
             // Ensure focus when window is activated
             Dispatcher.BeginInvoke(DispatcherPriority.Input, new Action(() =>
@@ -186,10 +186,10 @@ namespace chemmylemmy
                             UseShellExecute = true
                         });
                     }
-                    catch (Exception ex)
+                    catch
                     {
                         // Optionally show error to user
-                        System.Windows.MessageBox.Show($"Failed to open PubChem page: {ex.Message}");
+                        System.Windows.MessageBox.Show("Failed to open PubChem page");
                     }
                 }
             }
@@ -517,7 +517,7 @@ namespace chemmylemmy
                     StructureImage.Visibility = Visibility.Visible;
                 });
             }
-            catch (Exception ex)
+            catch
             {
                 Dispatcher.Invoke(() =>
                 {
@@ -552,30 +552,58 @@ namespace chemmylemmy
             var brushConverter = new System.Windows.Media.BrushConverter();
             try
             {
-                return (System.Windows.Media.Brush)brushConverter.ConvertFromString(colorString);
+                var brush = brushConverter.ConvertFromString(colorString) as System.Windows.Media.Brush;
+                if (brush != null)
+                    return brush;
             }
             catch
             {
-                return (System.Windows.Media.Brush)brushConverter.ConvertFromString(fallback);
+                // Handle conversion error
             }
+            
+            try
+            {
+                var fallbackBrush = brushConverter.ConvertFromString(fallback) as System.Windows.Media.Brush;
+                if (fallbackBrush != null)
+                    return fallbackBrush;
+            }
+            catch
+            {
+                // Handle fallback conversion error
+            }
+            
+            return System.Windows.Media.Brushes.Gray;
         }
         
         private void UpdateApplicationBrushes()
         {
             // Update application-level color resources for dynamic binding
             var app = System.Windows.Application.Current;
-            if (app != null && app.Resources != null)
+            if (app?.Resources != null)
             {
-                // Update the base colors that the brushes reference
-                app.Resources["MonokaiBackground"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(settings.WindowBackgroundColor);
-                app.Resources["MonokaiAccent"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(settings.SearchBoxBorderColor);
-                app.Resources["MonokaiBorder"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(settings.WindowBorderColor);
-                app.Resources["MonokaiText"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(settings.SearchBoxTextColor);
-                app.Resources["MonokaiHighlight"] = (System.Windows.Media.Color)System.Windows.Media.ColorConverter.ConvertFromString(settings.HighlightColor);
-                
-                // Update the background brushes
-                app.Resources["SearchBoxBackgroundBrush"] = SafeBrushFromString(settings.SearchBoxBackgroundColor, "#FF57584F");
-                app.Resources["ResultsBoxBackgroundBrush"] = SafeBrushFromString(settings.ResultsBoxBackgroundColor, "#FF35362F");
+                try
+                {
+                    // Update the base colors that the brushes reference
+                    var backgroundColor = System.Windows.Media.ColorConverter.ConvertFromString(settings.WindowBackgroundColor) as System.Windows.Media.Color?;
+                    var accentColor = System.Windows.Media.ColorConverter.ConvertFromString(settings.SearchBoxBorderColor) as System.Windows.Media.Color?;
+                    var borderColor = System.Windows.Media.ColorConverter.ConvertFromString(settings.WindowBorderColor) as System.Windows.Media.Color?;
+                    var textColor = System.Windows.Media.ColorConverter.ConvertFromString(settings.SearchBoxTextColor) as System.Windows.Media.Color?;
+                    var highlightColor = System.Windows.Media.ColorConverter.ConvertFromString(settings.HighlightColor) as System.Windows.Media.Color?;
+                    
+                    if (backgroundColor.HasValue) app.Resources["MonokaiBackground"] = backgroundColor.Value;
+                    if (accentColor.HasValue) app.Resources["MonokaiAccent"] = accentColor.Value;
+                    if (borderColor.HasValue) app.Resources["MonokaiBorder"] = borderColor.Value;
+                    if (textColor.HasValue) app.Resources["MonokaiText"] = textColor.Value;
+                    if (highlightColor.HasValue) app.Resources["MonokaiHighlight"] = highlightColor.Value;
+                    
+                    // Update the background brushes
+                    app.Resources["SearchBoxBackgroundBrush"] = SafeBrushFromString(settings.SearchBoxBackgroundColor, "#FF57584F");
+                    app.Resources["ResultsBoxBackgroundBrush"] = SafeBrushFromString(settings.ResultsBoxBackgroundColor, "#FF35362F");
+                }
+                catch
+                {
+                    // Handle color conversion errors silently
+                }
             }
         }
     }

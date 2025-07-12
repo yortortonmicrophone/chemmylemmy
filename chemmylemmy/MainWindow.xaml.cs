@@ -16,6 +16,7 @@ using System.Drawing;
 using WinFormsApplication = System.Windows.Forms.Application;
 using WpfApplication = System.Windows.Application;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
+using System.Threading.Tasks;
 
 namespace chemmylemmy
 {
@@ -24,7 +25,7 @@ namespace chemmylemmy
     /// </summary>
     public partial class MainWindow : Window
     {
-        private NotifyIcon notifyIcon;
+        private NotifyIcon? notifyIcon;
         private Settings settings;
 
         public MainWindow()
@@ -51,7 +52,7 @@ namespace chemmylemmy
                 // Register new hotkey from settings
                 HotkeyManager.Current.AddOrReplace("ShowSearchBar", settings.HotkeyKey, settings.HotkeyModifiers, OnShowSearchBarHotkey);
             }
-            catch (Exception ex)
+            catch
             {
                 // Handle hotkey registration errors silently
             }
@@ -60,23 +61,26 @@ namespace chemmylemmy
         private void SetupSystemTray()
         {
             notifyIcon = new NotifyIcon();
-            notifyIcon.Icon = SystemIcons.Application; // You can replace this with a custom icon
-            notifyIcon.Text = $"ChemmyLemmy - Press {settings.GetHotkeyDisplayString()} to search";
-            notifyIcon.Visible = true;
+            if (notifyIcon != null)
+            {
+                notifyIcon.Icon = SystemIcons.Application; // You can replace this with a custom icon
+                notifyIcon.Text = $"ChemmyLemmy - Press {settings.GetHotkeyDisplayString()} to search";
+                notifyIcon.Visible = true;
 
-            // Create context menu
-            var contextMenu = new ContextMenuStrip();
-            contextMenu.Items.Add($"Show Search ({settings.GetHotkeyDisplayString()})", null, (s, e) => ShowSearchBarWindow());
-            contextMenu.Items.Add("-"); // Separator
-            contextMenu.Items.Add("Settings", null, (s, e) => ShowSettingsWindow());
-            contextMenu.Items.Add("-"); // Separator
-            contextMenu.Items.Add("Exit", null, (s, e) => WpfApplication.Current.Shutdown());
-            
-            notifyIcon.ContextMenuStrip = contextMenu;
-            notifyIcon.DoubleClick += (s, e) => ShowSearchBarWindow();
+                // Create context menu
+                var contextMenu = new ContextMenuStrip();
+                contextMenu.Items.Add($"Show Search ({settings.GetHotkeyDisplayString()})", null, (s, e) => { var _ = Dispatcher.InvokeAsync(() => ShowSearchBarWindow()); });
+                contextMenu.Items.Add("-"); // Separator
+                contextMenu.Items.Add("Settings", null, (s, e) => { var _ = Dispatcher.InvokeAsync(() => ShowSettingsWindow()); });
+                contextMenu.Items.Add("-"); // Separator
+                contextMenu.Items.Add("Exit", null, (s, e) => WpfApplication.Current.Shutdown());
+                
+                notifyIcon.ContextMenuStrip = contextMenu;
+                notifyIcon.DoubleClick += (s, e) => { var _ = Dispatcher.InvokeAsync(() => ShowSearchBarWindow()); };
+            }
         }
 
-        private void OnShowSearchBarHotkey(object sender, HotkeyEventArgs e)
+        private void OnShowSearchBarHotkey(object? sender, HotkeyEventArgs e)
         {
             ShowSearchBarWindow();
             e.Handled = true;
@@ -96,7 +100,7 @@ namespace chemmylemmy
                 
                 // Update context menu
                 var contextMenu = notifyIcon.ContextMenuStrip;
-                if (contextMenu.Items.Count > 0)
+                if (contextMenu?.Items.Count > 0)
                 {
                     contextMenu.Items[0].Text = $"Show Search ({settings.GetHotkeyDisplayString()})";
                 }
@@ -145,7 +149,7 @@ namespace chemmylemmy
                 
                 // Update context menu
                 var contextMenu = notifyIcon.ContextMenuStrip;
-                if (contextMenu.Items.Count > 0)
+                if (contextMenu?.Items.Count > 0)
                 {
                     contextMenu.Items[0].Text = $"Show Search ({settings.GetHotkeyDisplayString()})";
                 }
