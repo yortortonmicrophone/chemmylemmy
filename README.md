@@ -1,5 +1,7 @@
 # ChemmyLemmy
 
+all of this shit is made by ai isn't that crazy. including all of the text after this paragraph btw. like the list of features all of that was just ai deciding thats a good idea. i havent written a single character of code and i made this in like 2 days. wow. actually i did write a character of code one time, on accident. i typed one tilde in a random spot and it absolutely demolished the code and the ai had to go fix it. good job cursor. slay.
+
 A Windows desktop application for quick chemical formula lookup and search. Built with WPF and C#.
 
 ## Features
@@ -18,7 +20,7 @@ A Windows desktop application for quick chemical formula lookup and search. Buil
 
 ### System Requirements
 - Windows 10 or later
-- No additional dependencies required (self-contained executable)
+- No additional dependencies required (self-contained executable) real person writing, this is only true if you download the bigger file. the one that says it includes everything. otherwise youll need .net 8.0 or some shit
 
 ## Installation
 
