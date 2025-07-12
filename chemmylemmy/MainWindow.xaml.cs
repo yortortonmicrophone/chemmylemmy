@@ -53,7 +53,7 @@ namespace chemmylemmy
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error registering hotkey: {ex.Message}");
+                // Handle hotkey registration errors silently
             }
         }
 

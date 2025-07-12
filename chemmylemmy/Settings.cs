@@ -141,7 +141,7 @@ namespace chemmylemmy
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error loading settings: {ex.Message}");
+                // Handle loading errors silently
             }
             
             return new Settings();
@@ -162,7 +162,7 @@ namespace chemmylemmy
             }
             catch (Exception ex)
             {
-                System.Diagnostics.Debug.WriteLine($"Error saving settings: {ex.Message}");
+                // Handle saving errors silently
             }
         }
 

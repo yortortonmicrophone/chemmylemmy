@@ -11,7 +11,6 @@ using System.Windows.Media.Animation;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using System.Net.Http;
-using System.Collections.Generic; // Added for List<string>
 using System.Windows.Media.Imaging;
 using System.IO;
 
@@ -26,7 +25,6 @@ namespace chemmylemmy
         private Settings settings;
         private DispatcherTimer debounceTimer;
         private const int DebounceMilliseconds = 500;
-        private System.Windows.Media.ScaleTransform ScaleTransform;
         private int? lastPubChemCID = null; // Store last PubChem CID
 
         public SearchBarWindow(Settings settings)
@@ -112,7 +110,6 @@ namespace chemmylemmy
             
             // Test simple connectivity first
             ResultsTextBlock.Text = "Testing network connectivity...";
-            Console.WriteLine("=== Starting connectivity tests ===");
             
             var simpleConnectivity = await PubChemService.TestSimpleConnectivityAsync();
             if (!simpleConnectivity)
@@ -421,16 +418,6 @@ namespace chemmylemmy
             // Default behavior: try local parsing first, then PubChem
             var localResult = SmartFormulaParser.ParseFormula(query);
             
-            // Debug: Show parsing result for "ohge"
-            if (query.ToLower() == "ohge")
-            {
-                var debugInfo = SmartFormulaParser.DebugParseResult(query);
-                ResultsTextBlock.Text = $"Debug for '{query}': {debugInfo}";
-                return;
-            }
-            
-
-            
             if (localResult.Success)
             {
                 // Local parsing worked - show result immediately
@@ -532,7 +519,6 @@ namespace chemmylemmy
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Failed to load structure image: {ex.Message}");
                 Dispatcher.Invoke(() =>
                 {
                     StructureImage.Visibility = Visibility.Collapsed;
