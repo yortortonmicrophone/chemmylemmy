@@ -537,8 +537,6 @@ namespace chemmylemmy
             
             // Window background and border
             this.Background = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF222222");
-            MainBorder.Background = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF222222");
-            MainBorder.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
             
             // Title bar
             var titleBar = this.FindName("TitleBar") as Grid;
@@ -729,13 +727,11 @@ namespace chemmylemmy
             var borders = FindVisualChildren<System.Windows.Controls.Border>(this);
             foreach (var border in borders)
             {
-                // Handle named borders (like MainBorder)
+                // Handle named borders
                 if (!string.IsNullOrEmpty(border.Name))
                 {
-                    if (border.Name.Contains("Border") || border.Name.Contains("MainBorder"))
+                    if (border.Name.Contains("Border"))
                     {
-                        // Skip the main border as it's handled separately
-                        if (border.Name != "MainBorder")
                         {
                             border.Background = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF2A2A2A");
                             border.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
