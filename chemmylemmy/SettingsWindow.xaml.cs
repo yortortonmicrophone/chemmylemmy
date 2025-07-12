@@ -4,10 +4,13 @@ using System.Windows.Input;
 using NHotkey;
 using NHotkey.Wpf;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using KeyEventArgs = System.Windows.Input.KeyEventArgs;
 using WpfApplication = System.Windows.Application;
 using System.Collections.Generic;
 using System.Windows.Threading;
+using System.Windows.Media;
+using System.Globalization;
 
 namespace chemmylemmy
 {
@@ -18,6 +21,29 @@ namespace chemmylemmy
         private MainWindow mainWindow;
         private DispatcherTimer keyCheckTimer;
         private bool isLoadingSettings = false;
+
+        private void UpdateThemeResources()
+        {
+            var currentSettings = Settings.Load();
+            
+            // Update the resource brushes
+            var backgroundBrush = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF2A2A2A");
+            var borderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+            var textBrush = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+            var highlightBrush = SafeBrushFromString(currentSettings.HighlightColor, "#FFA6E22E");
+            
+            this.Resources["ThemeBackgroundBrush"] = backgroundBrush;
+            this.Resources["ThemeBorderBrush"] = borderBrush;
+            this.Resources["ThemeTextBrush"] = textBrush;
+            this.Resources["ThemeHighlightBrush"] = highlightBrush;
+            
+            // Force the tab control to update its styles
+            if (MainTabControl != null)
+            {
+                MainTabControl.InvalidateVisual();
+                MainTabControl.UpdateLayout();
+            }
+        }
 
         public SettingsWindow(MainWindow mainWindow)
         {
@@ -30,7 +56,15 @@ namespace chemmylemmy
             keyCheckTimer = new DispatcherTimer();
             keyCheckTimer.Interval = TimeSpan.FromMilliseconds(0);
             keyCheckTimer.Tick += KeyCheckTimer_Tick;
+            
+            // Apply theme resources immediately
+            UpdateThemeResources();
+            
+            // Apply theme colors after the window is fully loaded
+            this.Loaded += (s, e) => ApplyThemeColors();
         }
+
+
 
         private void KeyCheckTimer_Tick(object sender, EventArgs e)
         {
@@ -240,6 +274,9 @@ namespace chemmylemmy
             NotificationBackgroundColorTextBox.Text = "#FF57584F";
             NotificationBorderColorTextBox.Text = "#FF49483E";
             NotificationTextColorTextBox.Text = "#FFF8F8F2";
+            
+            // Apply the new theme colors to the settings window
+            ApplyThemeColors();
         }
 
         private void DraculaTheme_Click(object sender, RoutedEventArgs e)
@@ -257,6 +294,9 @@ namespace chemmylemmy
             NotificationBackgroundColorTextBox.Text = "#FF44475A";
             NotificationBorderColorTextBox.Text = "#FF6272A4";
             NotificationTextColorTextBox.Text = "#FFF8F8F2";
+            
+            // Apply the new theme colors to the settings window
+            ApplyThemeColors();
         }
 
         private void SolarizedTheme_Click(object sender, RoutedEventArgs e)
@@ -274,6 +314,9 @@ namespace chemmylemmy
             NotificationBackgroundColorTextBox.Text = "#FF073642";
             NotificationBorderColorTextBox.Text = "#FF586E75";
             NotificationTextColorTextBox.Text = "#FFFDF6E3"; // brightened text
+            
+            // Apply the new theme colors to the settings window
+            ApplyThemeColors();
         }
 
         private void NordTheme_Click(object sender, RoutedEventArgs e)
@@ -291,6 +334,9 @@ namespace chemmylemmy
             NotificationBackgroundColorTextBox.Text = "#FF3B4252";
             NotificationBorderColorTextBox.Text = "#FF4C566A";
             NotificationTextColorTextBox.Text = "#FFECEFF4";
+            
+            // Apply the new theme colors to the settings window
+            ApplyThemeColors();
         }
 
         private void GruvboxTheme_Click(object sender, RoutedEventArgs e)
@@ -308,6 +354,9 @@ namespace chemmylemmy
             NotificationBackgroundColorTextBox.Text = "#FF3C3836";
             NotificationBorderColorTextBox.Text = "#FF504945";
             NotificationTextColorTextBox.Text = "#FFEBDBB2";
+            
+            // Apply the new theme colors to the settings window
+            ApplyThemeColors();
         }
 
         private void ResetDefaults_Click(object sender, RoutedEventArgs e)
@@ -381,6 +430,9 @@ namespace chemmylemmy
             // Update main window
             mainWindow.ApplySettings();
             
+            // Apply the new theme colors to the settings window
+            Dispatcher.Invoke(new Action(() => ApplyThemeColors()), System.Windows.Threading.DispatcherPriority.Loaded);
+            
             // Show success message
             System.Windows.MessageBox.Show("Settings saved successfully!", "Settings Saved", MessageBoxButton.OK, MessageBoxImage.Information);
         }
@@ -417,6 +469,8 @@ namespace chemmylemmy
             {
                 settings.Preset1.ApplyTo(settings);
                 LoadSettings();
+                // Apply theme colors after UI is updated
+                Dispatcher.Invoke(new Action(() => ApplyThemeColors()), System.Windows.Threading.DispatcherPriority.Loaded);
                 System.Windows.MessageBox.Show("Preset 1 loaded successfully!", "Preset Loaded", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
@@ -439,6 +493,8 @@ namespace chemmylemmy
             {
                 settings.Preset2.ApplyTo(settings);
                 LoadSettings();
+                // Apply theme colors after UI is updated
+                Dispatcher.Invoke(new Action(() => ApplyThemeColors()), System.Windows.Threading.DispatcherPriority.Loaded);
                 System.Windows.MessageBox.Show("Preset 2 loaded successfully!", "Preset Loaded", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
@@ -461,6 +517,8 @@ namespace chemmylemmy
             {
                 settings.Preset3.ApplyTo(settings);
                 LoadSettings();
+                // Apply theme colors after UI is updated
+                Dispatcher.Invoke(new Action(() => ApplyThemeColors()), System.Windows.Threading.DispatcherPriority.Loaded);
                 System.Windows.MessageBox.Show("Preset 3 loaded successfully!", "Preset Loaded", MessageBoxButton.OK, MessageBoxImage.Information);
             }
             else
@@ -471,8 +529,336 @@ namespace chemmylemmy
 
         private void ApplyThemeColors()
         {
-            // Simple dark gray theme - no complex color matching
-            // This will be replaced with proper theming later
+            // Apply current theme colors to the settings window
+            var currentSettings = Settings.Load();
+            
+            // Update the resource brushes first
+            UpdateThemeResources();
+            
+            // Window background and border
+            this.Background = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF222222");
+            MainBorder.Background = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF222222");
+            MainBorder.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+            
+            // Title bar
+            var titleBar = this.FindName("TitleBar") as Grid;
+            if (titleBar != null)
+            {
+                titleBar.Background = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF333333");
+            }
+            
+            // Tab control styling
+            if (MainTabControl != null)
+            {
+                MainTabControl.Background = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF222222");
+            }
+            
+            // Apply colors to bottom buttons (outside tab content)
+            ApplyColorsToBottomButtons(currentSettings);
+            
+
+            
+            // Force all tabs to be rendered and apply colors to all elements
+            ForceRenderAllTabsAndApplyColors(currentSettings);
+        }
+
+        private void ApplyColorsToBottomButtons(Settings currentSettings)
+        {
+            // Apply colors to the bottom buttons (Save, Reset Defaults, Cancel)
+            if (SaveButton != null)
+            {
+                SaveButton.Background = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+                SaveButton.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                SaveButton.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+            }
+            
+            if (ResetButton != null)
+            {
+                ResetButton.Background = System.Windows.Media.Brushes.Transparent;
+                ResetButton.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                ResetButton.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+            }
+            
+            if (CancelButton != null)
+            {
+                CancelButton.Background = System.Windows.Media.Brushes.Transparent;
+                CancelButton.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                CancelButton.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+            }
+        }
+
+        private void ForceRenderAllTabsAndApplyColors(Settings currentSettings)
+        {
+            if (MainTabControl != null && MainTabControl.Items.Count > 0)
+            {
+                var originalSelectedIndex = MainTabControl.SelectedIndex;
+                
+                // Temporarily switch to each tab to ensure they're rendered and apply colors
+                for (int i = 0; i < MainTabControl.Items.Count; i++)
+                {
+                    MainTabControl.SelectedIndex = i;
+                    MainTabControl.UpdateLayout();
+                    
+                    // Apply colors to the current tab's content
+                    ApplyColorsToCurrentTab(currentSettings);
+                }
+                
+                // Restore original selection
+                MainTabControl.SelectedIndex = originalSelectedIndex;
+                MainTabControl.UpdateLayout();
+            }
+        }
+
+        private void ApplyColorsToCurrentTab(Settings currentSettings)
+        {
+            // Find the current tab's content
+            var currentTabItem = MainTabControl.SelectedItem as TabItem;
+            if (currentTabItem?.Content is FrameworkElement content)
+            {
+                // Apply colors to all Border elements in the current tab
+                var borders = FindVisualChildren<System.Windows.Controls.Border>(content);
+                foreach (var border in borders)
+                {
+                    // Handle anonymous borders with CornerRadius="5" (the section backgrounds)
+                    if (string.IsNullOrEmpty(border.Name) && 
+                        border.CornerRadius.TopLeft == 5 && border.CornerRadius.TopRight == 5 && 
+                        border.CornerRadius.BottomLeft == 5 && border.CornerRadius.BottomRight == 5)
+                    {
+                        border.Background = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF2A2A2A");
+                        border.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+                    }
+                }
+                
+                // Apply colors to all TextBox elements in the current tab
+                var textBoxes = FindVisualChildren<System.Windows.Controls.TextBox>(content);
+                foreach (var textBox in textBoxes)
+                {
+                    textBox.Background = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF333333");
+                    textBox.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                    textBox.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+                }
+                
+                // Apply colors to all ComboBox elements in the current tab
+                var comboBoxes = FindVisualChildren<System.Windows.Controls.ComboBox>(content);
+                foreach (var comboBox in comboBoxes)
+                {
+                    comboBox.Background = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF333333");
+                    comboBox.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                    comboBox.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+                }
+                
+                // Apply colors to all Button elements in the current tab
+                var buttons = FindVisualChildren<System.Windows.Controls.Button>(content);
+                foreach (var button in buttons)
+                {
+                    if (button.Name == "CloseButton")
+                    {
+                        button.Background = System.Windows.Media.Brushes.Transparent;
+                        button.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                    }
+                    else if (button.Content?.ToString() == "Save")
+                    {
+                        button.Background = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+                        button.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                        button.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+                    }
+                    else
+                    {
+                        button.Background = System.Windows.Media.Brushes.Transparent;
+                        button.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                        button.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+                    }
+                }
+                
+                // Apply colors to all TextBlock elements in the current tab
+                var textBlocks = FindVisualChildren<System.Windows.Controls.TextBlock>(content);
+                foreach (var textBlock in textBlocks)
+                {
+                    textBlock.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                }
+                
+                // Apply colors to all CheckBox elements in the current tab
+                var checkBoxes = FindVisualChildren<System.Windows.Controls.CheckBox>(content);
+                foreach (var checkBox in checkBoxes)
+                {
+                    checkBox.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                }
+            }
+        }
+
+
+
+        private void ForceRenderAllTabs()
+        {
+            // Force all tabs to be rendered by temporarily switching to each tab
+            if (MainTabControl != null && MainTabControl.Items.Count > 0)
+            {
+                var originalSelectedIndex = MainTabControl.SelectedIndex;
+                
+                // Temporarily switch to each tab to ensure they're rendered
+                for (int i = 0; i < MainTabControl.Items.Count; i++)
+                {
+                    MainTabControl.SelectedIndex = i;
+                    MainTabControl.UpdateLayout();
+                }
+                
+                // Restore original selection
+                MainTabControl.SelectedIndex = originalSelectedIndex;
+                MainTabControl.UpdateLayout();
+            }
+        }
+
+        private T FindVisualChild<T>(DependencyObject parent) where T : DependencyObject
+        {
+            for (int i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = System.Windows.Media.VisualTreeHelper.GetChild(parent, i);
+                if (child is T result)
+                    return result;
+                
+                var childResult = FindVisualChild<T>(child);
+                if (childResult != null)
+                    return childResult;
+            }
+            return null;
+        }
+
+        private void ApplyColorsToElements(Settings currentSettings)
+        {
+            // Apply colors to all Border elements in the settings window
+            var borders = FindVisualChildren<System.Windows.Controls.Border>(this);
+            foreach (var border in borders)
+            {
+                // Handle named borders (like MainBorder)
+                if (!string.IsNullOrEmpty(border.Name))
+                {
+                    if (border.Name.Contains("Border") || border.Name.Contains("MainBorder"))
+                    {
+                        // Skip the main border as it's handled separately
+                        if (border.Name != "MainBorder")
+                        {
+                            border.Background = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF2A2A2A");
+                            border.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+                        }
+                    }
+                }
+                // Handle anonymous borders with CornerRadius="5" (the section backgrounds)
+                else if (border.CornerRadius.TopLeft == 5 && border.CornerRadius.TopRight == 5 && 
+                         border.CornerRadius.BottomLeft == 5 && border.CornerRadius.BottomRight == 5)
+                {
+                    border.Background = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF2A2A2A");
+                    border.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+                }
+            }
+            
+            // Apply colors to all TextBox elements
+            var textBoxes = FindVisualChildren<System.Windows.Controls.TextBox>(this);
+            foreach (var textBox in textBoxes)
+            {
+                textBox.Background = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF333333");
+                textBox.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                textBox.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+            }
+            
+            // Apply colors to all ComboBox elements
+            var comboBoxes = FindVisualChildren<System.Windows.Controls.ComboBox>(this);
+            foreach (var comboBox in comboBoxes)
+            {
+                comboBox.Background = SafeBrushFromString(currentSettings.WindowBackgroundColor, "#FF333333");
+                comboBox.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                comboBox.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+            }
+            
+            // Apply colors to all Button elements
+            var buttons = FindVisualChildren<System.Windows.Controls.Button>(this);
+            foreach (var button in buttons)
+            {
+                if (button.Name == "CloseButton")
+                {
+                    button.Background = System.Windows.Media.Brushes.Transparent;
+                    button.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                }
+                else if (button.Content?.ToString() == "Save")
+                {
+                    button.Background = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+                    button.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                    button.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+                }
+                else
+                {
+                    button.Background = System.Windows.Media.Brushes.Transparent;
+                    button.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                    button.BorderBrush = SafeBrushFromString(currentSettings.WindowBorderColor, "#FF444444");
+                }
+            }
+            
+            // Apply colors to all TextBlock elements
+            var textBlocks = FindVisualChildren<System.Windows.Controls.TextBlock>(this);
+            foreach (var textBlock in textBlocks)
+            {
+                textBlock.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+            }
+            
+            // Apply colors to all CheckBox elements
+            var checkBoxes = FindVisualChildren<System.Windows.Controls.CheckBox>(this);
+            foreach (var checkBox in checkBoxes)
+            {
+                checkBox.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+            }
+            
+            // Apply colors to all TabItem elements
+            var tabItems = FindVisualChildren<System.Windows.Controls.TabItem>(this);
+            foreach (var tabItem in tabItems)
+            {
+                tabItem.Foreground = SafeBrushFromString(currentSettings.SearchBoxTextColor, "#FFF0F0F0");
+                tabItem.Background = System.Windows.Media.Brushes.Transparent;
+            }
+        }
+
+        private System.Windows.Media.Brush SafeBrushFromString(string colorString, string fallbackColor)
+        {
+            try
+            {
+                var converter = new System.Windows.Media.BrushConverter();
+                if (converter.ConvertFromString(colorString) is System.Windows.Media.Brush brush)
+                {
+                    return brush;
+                }
+            }
+            catch
+            {
+                // If parsing fails, use fallback
+            }
+            
+            try
+            {
+                var converter = new System.Windows.Media.BrushConverter();
+                if (converter.ConvertFromString(fallbackColor) is System.Windows.Media.Brush fallback)
+                {
+                    return fallback;
+                }
+            }
+            catch
+            {
+                // If even fallback fails, return a default brush
+            }
+            
+            return System.Windows.Media.Brushes.Gray;
+        }
+
+        private IEnumerable<T> FindVisualChildren<T>(DependencyObject depObj) where T : DependencyObject
+        {
+            if (depObj == null) yield break;
+            
+            for (int i = 0; i < System.Windows.Media.VisualTreeHelper.GetChildrenCount(depObj); i++)
+            {
+                var child = System.Windows.Media.VisualTreeHelper.GetChild(depObj, i);
+                if (child is T t)
+                    yield return t;
+                
+                foreach (T childOfChild in FindVisualChildren<T>(child))
+                    yield return childOfChild;
+            }
         }
 
 
